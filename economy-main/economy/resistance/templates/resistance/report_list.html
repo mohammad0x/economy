@@ -1,0 +1,36 @@
+{% extends 'resistance/base.html' %}
+
+{% block content %}
+    <h1>لیست گزارش‌ها</h1>
+    <a href="{% url 'report-create' %}" class="btn">ایجاد گزارش جدید</a>
+    <table>
+        <thead>
+            <tr>
+                <th>مربوط به</th>
+                <th>موضوع</th>
+                <th>تاریخ</th>
+                <th>تعداد اعضا</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+            <tr>
+                <td>{{ report.deprivation.name }}</td>
+                <td>{{ report.subject }}</td>
+                <td>{{ report.date }}</td>
+                <td>{{ report.member }}</td>
+                <td class="actions">
+                    <a href="{% url 'report-detail' report.pk %}">جزئیات</a>
+                    <a href="{% url 'report-update' report.pk %}">ویرایش</a>
+                    <a href="{% url 'report-delete' report.pk %}" class="delete">حذف</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">هیچ گزارشی یافت نشد.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

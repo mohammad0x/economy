@@ -1,0 +1,36 @@
+{% extends 'resistance/base.html' %}
+
+{% block content %}
+    <h1>لیست اطلاعات صندوق‌ها</h1>
+    <a href="{% url 'informationfund-create' %}" class="btn">ایجاد رکورد جدید</a>
+    <table>
+        <thead>
+            <tr>
+                <th>نام و نام خانوادگی</th>
+                <th>کد ملی</th>
+                <th>شماره تلفن</th>
+                <th>کد گروه</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fund in funds %}
+            <tr>
+                <td>{{ fund.name }}</td>
+                <td>{{ fund.nCode }}</td>
+                <td>{{ fund.phone }}</td>
+                <td>{{ fund.cGroup }}</td>
+                <td class="actions">
+                    <a href="{% url 'informationfund-detail' fund.pk %}">جزئیات</a>
+                    <a href="{% url 'informationfund-update' fund.pk %}">ویرایش</a>
+                    <a href="{% url 'informationfund-delete' fund.pk %}" class="delete">حذف</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">هیچ رکوردی یافت نشد.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

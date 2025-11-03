@@ -1,0 +1,20 @@
+{% extends 'resistance/base.html' %}
+{% block content %}
+    <h1>ورود به سامانه</h1>
+    <p>لطفاً برای دسترسی به داشبورد وارد شوید.</p>
+    <form method="post">
+        {% csrf_token %}
+        {% if form.errors %}
+            <p style="color: red;">نام کاربری (تلفن) یا رمز عبور اشتباه است.</p>
+        {% endif %}
+        <p>
+            <label for="id_username">تلفن (نام کاربری):</label>
+            <input type="text" name="username" autofocus="" required="" id="id_username">
+        </p>
+        <p>
+            <label for="id_password">رمز عبور:</label>
+            <input type="password" name="password" required="" id="id_password">
+        </p>
+        <button type="submit" class="btn">ورود</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'resistance/base.html' %}
+{% block content %}
+    <h1>داشبورد</h1>
+    <p>خوش آمدید، {{ user.username }}.</p>
+    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+        <a href="{% url 'informationfund-list' %}" class="btn" style="flex: 1; text-align: center; padding: 2rem; font-size: 1.2rem;">
+            مدیریت اطلاعات صندوق‌ها
+        </a>
+        <a href="{% url 'deprivation-list' %}" class="btn" style="flex: 1; text-align: center; padding: 2rem; font-size: 1.2rem;">
+            مدیریت محرومیت‌زدایی
+        </a>
+    </div>
+{% endblock %}

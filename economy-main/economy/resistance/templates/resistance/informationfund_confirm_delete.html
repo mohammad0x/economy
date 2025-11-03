@@ -1,0 +1,11 @@
+{% extends 'resistance/base.html' %}
+
+{% block content %}
+    <h1>حذف اطلاعات صندوق</h1>
+    <p>آیا از حذف "<strong>{{ object.name }}</strong>" مطمئن هستید؟</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-delete">تایید حذف</button>
+        <a href="{% url 'informationfund-detail' object.pk %}" class="btn btn-secondary">انصراف</a>
+    </form>
+{% endblock %}

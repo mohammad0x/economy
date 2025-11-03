@@ -1,0 +1,38 @@
+{% extends 'resistance/base.html' %}
+
+{% block content %}
+    <h1>لیست محرومیت‌زدایی</h1>
+    <a href="{% url 'deprivation-create' %}" class="btn">ایجاد رکورد جدید</a>
+    <table>
+        <thead>
+            <tr>
+                <th>نام و نام خانوادگی</th>
+                <th>کد ملی</th>
+                <th>شماره تلفن</th>
+                <th>کد گروه</th>
+                <th>نام صندوق</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in deprivations %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.nCode }}</td>
+                <td>{{ item.phone }}</td>
+                <td>{{ item.cGroup }}</td>
+                <td>{{ item.fund_name|default:"-" }}</td>
+                <td class="actions">
+                    <a href="{% url 'deprivation-detail' item.pk %}">جزئیات</a>
+                    <a href="{% url 'deprivation-update' item.pk %}">ویرایش</a>
+                    <a href="{% url 'deprivation-delete' item.pk %}" class="delete">حذف</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">هیچ رکوردی یافت نشد.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

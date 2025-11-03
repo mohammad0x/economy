@@ -1,0 +1,14 @@
+{% extends 'resistance/base.html' %}
+{% block content %}
+    <h1>{% if object %}ویرایش صندوق{% else %}ایجاد صندوق جدید{% endif %}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">ذخیره</button>
+        {% if object %}
+            <a href="{% url 'informationfund-detail' object.fund.pk %}" class="btn btn-secondary">انصراف</a>
+        {% else %}
+             <a href="{% url 'dashboard' %}" class="btn btn-secondary">انصراف</a>
+        {% endif %}
+    </form>
+{% endblock %}

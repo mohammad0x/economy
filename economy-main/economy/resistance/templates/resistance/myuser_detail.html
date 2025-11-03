@@ -1,0 +1,15 @@
+{% extends 'resistance/base.html' %}
+
+{% block content %}
+    <h1>جزئیات کاربر: {{ user.username }}</h1>
+    <div class="detail-view">
+        <p><strong>تلفن:</strong> {{ user.phone }}</p>
+        <p><strong>نام کاربری:</strong> {{ user.username }}</p>
+        <p><strong>فعال:</strong> {% if user.is_active %}بله{% else %}خیر{% endif %}</p>
+        <p><strong>ادمین:</strong> {% if user.is_admin %}بله{% else %}خیر{% endif %}</p>
+    </div>
+    
+    <a href="{% url 'user-update' user.pk %}" class="btn">ویرایش</a>
+    <a href="{% url 'user-delete' user.pk %}" class="btn btn-delete">حذف</a>
+    <a href="{% url 'user-list' %}" class="btn btn-secondary">بازگشت به لیست</a>
+{% endblock %}
