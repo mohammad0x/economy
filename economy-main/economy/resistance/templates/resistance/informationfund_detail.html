@@ -1,25 +1,39 @@
-{% extends 'resistance/base.html' %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}جزئیات صندوق{% endblock %}
+
 {% block content %}
-    <h1>جزئیات: {{ fund.name }}</h1>
-    <div class="detail-view">
-        <p><strong>نام و نام خانوادگی:</strong> {{ fund.name }}</p>
-        <p><strong>کد ملی:</strong> {{ fund.nCode }}</p>
+<div style="display:flex;justify-content:center;margin-top:40px;">
+    <div class="detail-card">
+        <h2>جزئیات صندوق</h2>
+        <p><strong>نام:</strong> {{ fund.name }}</p>
         <p><strong>نام پدر:</strong> {{ fund.fName }}</p>
+        <p><strong>کد ملی:</strong> {{ fund.nCode }}</p>
         <p><strong>شماره تلفن:</strong> {{ fund.phone }}</p>
         <p><strong>کد گروه:</strong> {{ fund.cGroup }}</p>
+        <div style="margin-top:20px;">
+            <a href="{% url 'informationfund-update' fund.pk %}" class="btn">ویرایش</a>
+            <a href="{% url 'informationfund-delete' fund.pk %}" class="btn btn-danger">حذف</a>
+        </div>
     </div>
-    <hr>
-    <h3>اطلاعات تکمیلی صندوق</h3>
-    {% if fund.fund %}
-        <p>اطلاعات تکمیلی این صندوق قبلا ثبت شده است.</p>
-        <a href="{% url 'fund-detail' fund.fund.pk %}" class="btn">مشاهده اطلاعات تکمیلی</a>
-        <a href="{% url 'fund-update' fund.fund.pk %}" class="btn btn-secondary">ویرایش اطلاعات تکمیلی</a>
-    {% else %}
-        <p>اطلاعات تکمیلی (موجودی، وام‌ها و...) برای این صندوق ثبت نشده است.</p>
-        <a href="{% url 'fund-create' fund.pk %}" class="btn">افزودن اطلاعات تکمیلی صندوق</a>
-    {% endif %}
-    <hr style="margin-top: 2rem;">
-    <a href="{% url 'informationfund-update' fund.pk %}" class="btn">ویرایش اطلاعات پایه</a>
-    <a href="{% url 'informationfund-delete' fund.pk %}" class="btn btn-delete">حذف کامل</a>
-    <a href="{% url 'informationfund-list' %}" class="btn btn-secondary">بازگشت به لیست</a>
+</div>
+
+<style>
+.detail-card {
+    width:400px; padding:30px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+    color:#e0e0e0; text-align:right;
+}
+.detail-card h2 { text-align:center; color:#1aff99; margin-bottom:20px; text-shadow:0 0 10px #1aff99aa; }
+.detail-card p{ margin-bottom:10px; }
+.btn { display:inline-block; padding:10px 20px; margin-right:10px; border-radius:12px;
+    background:#1aff99; color:#000; font-weight:bold; text-decoration:none; transition:all 0.3s; }
+.btn:hover { background:#12e68a; transform:translateY(-2px);}
+.btn-danger { background:#ff4d4d; color:#fff; }
+.btn-danger:hover { background:#e60000; }
+</style>
 {% endblock %}

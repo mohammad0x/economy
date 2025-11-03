@@ -1,26 +1,40 @@
-{% extends 'resistance/base.html' %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}جزئیات صندوق{% endblock %}
 
 {% block content %}
-    <h1>جزئیات صندوق: {{ fund.fund.name }}</h1>
-    <div class="detail-view">
-        <p><strong>شناسه صندوق:</strong> {{ fund.fund.name }} ({{ fund.fund.phone }})</p>
+<div style="display:flex;justify-content:center;margin-top:40px;">
+    <div class="detail-card">
+        <h2>جزئیات صندوق</h2>
+        <p><strong>صندوق:</strong> {{ fund.fund.name }}</p>
         <p><strong>تعداد اعضا:</strong> {{ fund.member }}</p>
         <p><strong>تعداد وام:</strong> {{ fund.NumberOfLoans }}</p>
         <p><strong>مبلغ پرداختی:</strong> {{ fund.mony }}</p>
         <p><strong>موجودی:</strong> {{ fund.quantity }}</p>
-        <p><strong>پس انداز:</strong> {{ fund.AfterTheSize }}</p>
-        <hr>
-        <p><strong>دوره آموزشی:</strong> {{ fund.get_course_display }}</p>
-        <p><strong>نام دوره:</strong> {{ fund.name_course|default:"-" }}</p>
-        <p><strong>تعداد شرکت کننده:</strong> {{ fund.member_course|default:"-" }}</p>
-        <p><strong>نام استاد:</strong> {{ fund.name_teacher|default:"-" }}</p>
-        <p><strong>شماره استاد:</strong> {{ fund.phone_teacher|default:"-" }}</p>
-        <hr>
-        <p><strong>بازارچه:</strong> {{ fund.get_bazaar_display }}</p>
-        <p><strong>توضیحات بازارچه:</strong> {{ fund.bazzar_desc|default:"-" }}</p>
+        <p><strong>پس‌انداز:</strong> {{ fund.AfterTheSize }}</p>
+        <div style="margin-top:20px;">
+            <a href="{% url 'fund-update' fund.pk %}" class="btn">ویرایش</a>
+            <a href="{% url 'fund-delete' fund.pk %}" class="btn btn-danger">حذف</a>
+        </div>
     </div>
-    
-    <a href="{% url 'fund-update' fund.pk %}" class="btn">ویرایش</a>
-    <a href="{% url 'fund-delete' fund.pk %}" class="btn btn-delete">حذف</a>
-    <a href="{% url 'fund-list' %}" class="btn btn-secondary">بازگشت به لیست</a>
+</div>
+
+<style>
+.detail-card {
+    width:400px; padding:30px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+    color:#e0e0e0; text-align:right;
+}
+.detail-card h2 { text-align:center; color:#1aff99; margin-bottom:20px; text-shadow:0 0 10px #1aff99aa; }
+.detail-card p{ margin-bottom:10px; }
+.btn { display:inline-block; padding:10px 20px; margin-right:10px; border-radius:12px;
+    background:#1aff99; color:#000; font-weight:bold; text-decoration:none; transition:all 0.3s; }
+.btn:hover { background:#12e68a; transform:translateY(-2px);}
+.btn-danger { background:#ff4d4d; color:#fff; }
+.btn-danger:hover { background:#e60000; }
+</style>
 {% endblock %}

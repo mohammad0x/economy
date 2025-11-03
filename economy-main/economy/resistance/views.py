@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
+
 from .models import MyUser, InformationFund, Fund, Deprivation, Report
 from .forms import MyUserForm, InformationFundForm, FundForm, DeprivationForm, ReportForm
 
@@ -21,6 +22,13 @@ login_required_m = method_decorator(login_required, name='dispatch')
 class DashboardView(TemplateView):
     template_name = 'resistance/dashboard.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['funds_count'] = InformationFund.objects.count()
+        context['deprivations_count'] = Deprivation.objects.count()
+        context['reports_count'] = Report.objects.count()
+        context['users_count'] = MyUser.objects.count()
+        return context
 
 @admin_required
 class MyUserListView(ListView):
@@ -237,3 +245,11 @@ class ReportDeleteView(DeleteView):
     def get_success_url(self):
         deprivation_pk = self.object.deprivation.pk
         return reverse_lazy('deprivation-detail', kwargs={'pk': deprivation_pk})
+class export_reports_excel():
+    def export_reports_excel(request):
+        reports = Report.objects.all().values('deprivation__name', 'date', 'address', 'subject', 'desc', 'member')
+        df = pd.DataFrame(list(reports))
+        response = HttpResponse(content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="reports.xlsx"'
+        df.to_excel(response, index=False)
+        return responseeconomy-main/economy/resistance/templates

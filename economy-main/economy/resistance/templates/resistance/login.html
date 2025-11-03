@@ -1,20 +1,129 @@
-{% extends 'resistance/base.html' %}
+{% load static %}
 {% block content %}
-    <h1>ورود به سامانه</h1>
-    <p>لطفاً برای دسترسی به داشبورد وارد شوید.</p>
-    <form method="post">
-        {% csrf_token %}
-        {% if form.errors %}
-            <p style="color: red;">نام کاربری (تلفن) یا رمز عبور اشتباه است.</p>
-        {% endif %}
-        <p>
-            <label for="id_username">تلفن (نام کاربری):</label>
-            <input type="text" name="username" autofocus="" required="" id="id_username">
-        </p>
-        <p>
-            <label for="id_password">رمز عبور:</label>
-            <input type="password" name="password" required="" id="id_password">
-        </p>
-        <button type="submit" class="btn">ورود</button>
-    </form>
+<!-- Login Container -->
+<div style="display:flex;justify-content:center;align-items:center;height:80vh;">
+    <div class="login-card">
+        <h2>ورود به پنل</h2>
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <!-- Phone Field -->
+            <div class="form-group">
+                <label for="id_phone">شماره تلفن</label>
+                <input type="text" name="phone" id="id_phone" placeholder="مثال: 09123456789" required>
+            </div>
+            <!-- Password Field -->
+            <div class="form-group">
+                <label for="id_password">رمز عبور</label>
+                <input type="password" name="password" id="id_password" placeholder="رمز عبور" required>
+            </div>
+            <!-- Submit Button -->
+            <button type="submit" class="btn">ورود</button>
+        </form>
+    </div>
+</div>
+
+<!-- Toast for errors -->
+<div id="login-toast"></div>
+
+<style>
+    /* Login Card Glassmorphism */
+    .login-card {
+        width: 350px;
+        padding: 30px 25px;
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(12px);
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        color: #e0e0e0;
+        text-align: center;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .login-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    }
+    .login-card h2 {
+        margin-bottom: 20px;
+        color: #1aff99;
+        text-shadow: 0 0 8px #1aff99aa;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        text-align: right;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+        transition: all 0.3s;
+        box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .form-group input:focus {
+        background: rgba(255,255,255,0.15);
+        box-shadow: 0 0 10px #1aff99aa inset;
+        transform: scale(1.02);
+    }
+
+    /* Submit Button */
+    .btn {
+        width: 100%;
+        padding: 12px;
+        border-radius: 12px;
+        background: #1aff99;
+        color: #000;
+        font-weight: bold;
+        font-size: 16px;
+        box-shadow: 0 5px 15px rgba(0,255,153,0.3);
+        transition: all 0.3s;
+    }
+    .btn:hover {
+        background: #12e68a;
+        box-shadow: 0 8px 20px rgba(0,255,153,0.5);
+        transform: translateY(-2px);
+    }
+
+    /* Toast */
+    #login-toast {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #ff4d4d;
+        color: #fff;
+        padding: 14px 28px;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(255,77,77,0.4);
+        display: none;
+        z-index: 1100;
+        font-weight: bold;
+        animation: toast-in 0.5s forwards, toast-out 0.5s forwards 3s;
+    }
+    @keyframes toast-in { from {opacity:0; transform: translate(-50%, -20px);} to {opacity:1; transform: translate(-50%,0);} }
+    @keyframes toast-out { to {opacity:0; transform: translate(-50%, -20px);} }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+        .login-card { width: 90%; padding: 25px; }
+    }
+</style>
+
+<script>
+    // Example: show toast for login errors
+    {% if form.errors %}
+        const loginToast = document.getElementById('login-toast');
+        loginToast.textContent = "شماره تلفن یا رمز عبور اشتباه است!";
+        loginToast.style.display = 'block';
+        setTimeout(() => { loginToast.style.display = 'none'; }, 3500);
+    {% endif %}
+</script>
 {% endblock %}

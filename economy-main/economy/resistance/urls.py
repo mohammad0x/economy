@@ -39,4 +39,5 @@ urlpatterns = [
     path('reports/<int:pk>/edit/', views.ReportUpdateView.as_view(), name='report-update'),
     path('reports/<int:pk>/delete/', views.ReportDeleteView.as_view(), name='report-delete'),
     path('reports/', views.ReportListView.as_view(), name='report-list'),
+
 ]

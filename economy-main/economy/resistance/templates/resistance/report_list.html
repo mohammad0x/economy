@@ -1,36 +1,72 @@
-{% extends 'resistance/base.html' %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}گزارش‌ها{% endblock %}
 
 {% block content %}
-    <h1>لیست گزارش‌ها</h1>
-    <a href="{% url 'report-create' %}" class="btn">ایجاد گزارش جدید</a>
-    <table>
-        <thead>
-            <tr>
-                <th>مربوط به</th>
-                <th>موضوع</th>
-                <th>تاریخ</th>
-                <th>تعداد اعضا</th>
-                <th>عملیات</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for report in reports %}
-            <tr>
-                <td>{{ report.deprivation.name }}</td>
-                <td>{{ report.subject }}</td>
-                <td>{{ report.date }}</td>
-                <td>{{ report.member }}</td>
-                <td class="actions">
-                    <a href="{% url 'report-detail' report.pk %}">جزئیات</a>
-                    <a href="{% url 'report-update' report.pk %}">ویرایش</a>
-                    <a href="{% url 'report-delete' report.pk %}" class="delete">حذف</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5">هیچ گزارشی یافت نشد.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="dashboard-container">
+
+    <div class="table-container">
+        <h3>لیست گزارش‌ها</h3>
+        <input type="text" id="search-input" placeholder="جستجو گزارش‌ها..." class="search-box">
+        <table id="report-table">
+            <thead>
+                <tr>
+                    <th>نام محروم</th>
+                    <th>تاریخ</th>
+                    <th>موضوع</th>
+                    <th>آدرس</th>
+                    <th>تعداد اعضا</th>
+                    <th>مدیریت</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in reports %}
+                <tr>
+                    <td>{{ report.deprivation.name }}</td>
+                    <td>{{ report.date }}</td>
+                    <td>{{ report.subject }}</td>
+                    <td>{{ report.address }}</td>
+                    <td>{{ report.member }}</td>
+                    <td>
+                        <a href="{% url 'report-detail' report.pk %}">جزئیات</a> |
+                        <a href="{% url 'report-update' report.pk %}">ویرایش</a> |
+                        <a href="{% url 'report-delete' report.pk %}">حذف</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<style>
+.dashboard-container { display: flex; flex-direction: column; gap: 30px; }
+.table-container { background: rgba(11,61,47,0.85); padding: 20px; border-radius: 15px; backdrop-filter: blur(10px); }
+.table-container h3 { color: #1aff99; margin-bottom: 15px; }
+.search-box {
+    width: 100%; padding: 10px 15px; border-radius: 10px; border: none;
+    outline: none; margin-bottom: 15px; background: rgba(255,255,255,0.1); color: #fff;
+    transition: all 0.3s;
+}
+.search-box:focus { background: rgba(255,255,255,0.15); box-shadow: 0 0 10px #1aff99aa inset; }
+
+table { width: 100%; border-collapse: collapse; color: #e0e0e0; }
+th, td { padding: 12px 10px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+tr:hover { background: rgba(26,255,153,0.1); }
+
+@media (max-width: 768px) { .table-container { overflow-x: auto; } }
+</style>
+
+<script>
+// Table Search Filter
+document.getElementById('search-input').addEventListener('keyup', function() {
+    let filter = this.value.toLowerCase();
+    let rows = document.querySelectorAll('#report-table tbody tr');
+    rows.forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
+    });
+});
+</script>
 {% endblock %}

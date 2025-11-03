@@ -1,11 +1,37 @@
-{% extends 'resistance/base.html' %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}حذف کاربر{% endblock %}
 
 {% block content %}
-    <h1>حذف کاربر</h1>
-    <p>آیا از حذف کاربر "<strong>{{ object.username }}</strong>" مطمئن هستید؟</p>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-delete">تایید حذف</button>
-        <a href="{% url 'user-detail' object.pk %}" class="btn btn-secondary">انصراف</a>
-    </form>
+<div style="display:flex;justify-content:center;margin-top:60px;">
+    <div class="delete-card">
+        <h2>آیا مطمئن هستید که می‌خواهید این کاربر را حذف کنید؟</h2>
+        <p><strong>{{ object.username }}</strong> ({{ object.phone }})</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">حذف</button>
+            <a href="{% url 'user-list' %}" class="btn">انصراف</a>
+        </form>
+    </div>
+</div>
+
+<style>
+.delete-card {
+    width: 400px;
+    padding: 30px;
+    background: rgba(255,0,0,0.05);
+    backdrop-filter: blur(10px);
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+    color:#fff;
+    text-align:center;
+}
+.delete-card h2 { color:#ff4d4d; margin-bottom:15px; }
+.delete-card p { margin-bottom:20px; }
+.btn { display:inline-block; padding:10px 20px; margin:5px; border-radius:12px; text-decoration:none; font-weight:bold; transition:all 0.3s; }
+.btn:hover { transform: translateY(-2px); }
+.btn-danger { background:#ff4d4d; color:#fff; border:none; }
+.btn:hover { box-shadow:0 5px 15px rgba(255,77,77,0.4); }
+</style>
 {% endblock %}

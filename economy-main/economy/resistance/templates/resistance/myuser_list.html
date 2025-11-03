@@ -1,34 +1,71 @@
-{% extends 'resistance/base.html' %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}لیست کاربران{% endblock %}
 
 {% block content %}
-    <h1>لیست کاربران</h1>
-    <a href="{% url 'user-create' %}" class="btn">ایجاد کاربر جدید</a>
-    <table>
-        <thead>
-            <tr>
-                <th>تلفن</th>
-                <th>نام کاربری</th>
-                <th>وضعیت</th>
-                <th>عملیات</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-            <tr>
-                <td>{{ user.phone }}</td>
-                <td>{{ user.username }}</td>
-                <td>{% if user.is_active %}فعال{% else %}غیرفعال{% endif %}</td>
-                <td class="actions">
-                    <a href="{% url 'user-detail' user.pk %}">جزئیات</a>
-                    <a href="{% url 'user-update' user.pk %}">ویرایش</a>
-                    <a href="{% url 'user-delete' user.pk %}" class="delete">حذف</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4">هیچ کاربری یافت نشد.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="dashboard-container">
+    <div class="table-container">
+        <h3>لیست کاربران</h3>
+        <input type="text" id="search-input" placeholder="جستجو کاربران..." class="search-box">
+        <table id="users-table">
+            <thead>
+                <tr>
+                    <th>شماره تلفن</th>
+                    <th>نام کاربری</th>
+                    <th>فعال</th>
+                    <th>مدیریت</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.phone }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.is_active|yesno:"بله,خیر" }}</td>
+                    <td>
+                        <a href="{% url 'user-detail' user.pk %}">جزئیات</a> |
+                        <a href="{% url 'user-update' user.pk %}">ویرایش</a> |
+                        <a href="{% url 'user-delete' user.pk %}">حذف</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+.dashboard-container { display: flex; flex-direction: column; gap: 30px; }
+.table-container {
+    background: rgba(11,61,47,0.85);
+    padding: 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+.table-container h3 { color: #1aff99; margin-bottom: 15px; }
+.search-box {
+    width: 100%; padding: 10px 15px; border-radius: 10px; border: none;
+    outline: none; margin-bottom: 15px; background: rgba(255,255,255,0.1); color: #fff;
+    transition: all 0.3s;
+}
+.search-box:focus { background: rgba(255,255,255,0.15); box-shadow: 0 0 10px #1aff99aa inset; }
+
+table { width: 100%; border-collapse: collapse; color: #e0e0e0; }
+th, td { padding: 12px 10px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+tr:hover { background: rgba(26,255,153,0.1); }
+
+@media (max-width: 768px) { .table-container { overflow-x: auto; } }
+</style>
+
+<script>
+// Table Search Filter
+document.getElementById('search-input').addEventListener('keyup', function() {
+    let filter = this.value.toLowerCase();
+    let rows = document.querySelectorAll('#users-table tbody tr');
+    rows.forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
+    });
+});
+</script>
 {% endblock %}

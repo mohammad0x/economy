@@ -1,11 +1,44 @@
-{% extends 'resistance/base.html' %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if object %}ویرایش صندوق{% else %}ثبت صندوق جدید{% endif %}{% endblock %}
 
 {% block content %}
-    <h1>{% if object %}ویرایش اطلاعات صندوق{% else %}ایجاد اطلاعات صندوق{% endif %}</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn">ذخیره</button>
-        <a href="{% url 'informationfund-list' %}" class="btn btn-secondary">انصراف</a>
-    </form>
+<div style="display:flex;justify-content:center;margin-top:40px;">
+    <div class="form-card">
+        <h2>{% if object %}ویرایش صندوق{% else %}ثبت صندوق جدید{% endif %}</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                    <div class="error">{{ field.errors|striptags }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn">{% if object %}ویرایش{% else %}ثبت{% endif %}</button>
+        </form>
+    </div>
+</div>
+
+<style>
+.form-card {
+    width:400px; padding:30px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+    color:#e0e0e0;
+}
+.form-card h2 { text-align:center; color:#1aff99; margin-bottom:20px; text-shadow:0 0 10px #1aff99aa; }
+.form-group { margin-bottom:20px; text-align:right; }
+.form-group input, .form-group select { width:100%; padding:12px; border-radius:10px; border:none;
+    outline:none; background: rgba(255,255,255,0.1); color:#fff; transition: all 0.3s; box-shadow: inset 0 2px 6px rgba(0,0,0,0.3); }
+.form-group input:focus, .form-group select:focus { background: rgba(255,255,255,0.15); box-shadow:0 0 10px #1aff99aa inset; transform:scale(1.02);}
+.error { color:#ff4d4d; font-size:13px; margin-top:5px; }
+.btn { width:100%; padding:12px; border-radius:12px; background:#1aff99; color:#000; font-weight:bold; font-size:16px; transition:all 0.3s;}
+.btn:hover { background:#12e68a; transform:translateY(-2px); }
+</style>
 {% endblock %}

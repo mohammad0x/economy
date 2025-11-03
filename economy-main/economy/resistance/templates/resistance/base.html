@@ -1,62 +1,283 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پروژه اقتصاد مقاومتی</title>
+    <title>{% block title %}پنل مدیریت{% endblock %}</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'img/icon.png'  %}" type="image/icon">
+
+    <!-- Inline CSS -->
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }
-        .navbar { background-color: #004d40; color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
-        .nav-links { display: flex; gap: 1.5rem; }
-        .nav-links a { color: white; text-decoration: none; font-weight: bold; }
-        .nav-links a:hover { text-decoration: underline; }
-        .nav-user { color: white; }
-        .nav-user a { color: #ffcdd2; text-decoration: none; margin-right: 0.5rem; }
-        .container { max-width: 1100px; margin: 2rem auto; padding: 2rem; background-color: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        h1 { color: #004d40; border-bottom: 2px solid #00796b; padding-bottom: 0.5rem; margin-top: 0; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
-        th, td { padding: 0.75rem 1rem; border: 1px solid #ddd; text-align: right; }
-        th { background-color: #e0f2f1; color: #004d40; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        .actions a { color: #00796b; text-decoration: none; margin-left: 0.75rem; }
-        .actions a.delete { color: #d32f2f; }
-        .actions a:hover { text-decoration: underline; }
-        .btn { display: inline-block; background-color: #00796b; color: white; padding: 0.75rem 1.5rem; text-decoration: none; border-radius: 4px; margin-top: 1.5rem; font-weight: bold; border: none; cursor: pointer; }
-        .btn-delete { background-color: #d32f2f; }
-        .btn-secondary { background-color: #6c757d; }
-        .btn:hover { opacity: 0.9; }
-        form { margin-top: 1.5rem; }
-        form p { margin-bottom: 1rem; }
-        form label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
-        form input[type="text"], form input[type="password"], form input[type="date"], form select, form textarea { width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .detail-view p { font-size: 1.1rem; line-height: 1.7; border-bottom: 1px solid #eee; padding-bottom: 0.75rem; }
-        .detail-view strong { color: #004d40; margin-left: 0.5rem; }
+        /* Reset & Base */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Vazir', sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #0b3d2f, #06402a); 
+            color: #e0e0e0; 
+            transition: background 0.3s, color 0.3s; 
+            overflow-x: hidden;
+        }
+        a { color: inherit; text-decoration: none; }
+        ul { list-style: none; }
+        button { cursor: pointer; border: none; outline: none; background: none; }
+
+        /* Loader */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: rgba(11,61,47,0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #loader.hidden { opacity: 0; visibility: hidden; }
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #ffffff33;
+            border-top: 6px solid #1aff99;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            box-shadow: 0 0 20px #1aff99aa;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: rgba(11,61,47,0.9);
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 15px;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            box-shadow: -2px 0 15px rgba(0,0,0,0.3);
+        }
+        .sidebar h2 { 
+            text-align: center; 
+            margin-bottom: 25px; 
+            color: #1aff99; 
+            text-shadow: 0 0 10px #1aff99aa;
+        }
+        .sidebar ul li { margin: 15px 0; }
+        .sidebar ul li a { 
+            display: block; 
+            padding: 12px; 
+            border-radius: 10px; 
+            transition: 0.3s; 
+            position: relative;
+        }
+        .sidebar ul li a::before {
+            content: '';
+            position: absolute;
+            left: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 5px;
+            background: #1aff99;
+            border-radius: 50%;
+            opacity: 0;
+            transition: 0.3s;
+        }
+        .sidebar ul li a:hover::before { opacity: 1; transform: translateY(-50%) scale(1.5); }
+        .sidebar ul li a:hover { background: #1aff9933; box-shadow: 0 4px 15px #1aff9944; }
+
+        /* Header */
+        header {
+            position: fixed;
+            right: 250px;
+            left: 0;
+            top: 0;
+            height: 60px;
+            background: rgba(11,61,47,0.85);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 900;
+            color: #e0e0e0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            transition: background 0.3s;
+        }
+        header .user-info { display: flex; align-items: center; gap: 15px; }
+        header .user-info img { 
+            width: 40px; height: 40px; 
+            border-radius: 50%; 
+            border: 2px solid #1aff99; 
+            box-shadow: 0 0 10px #1aff99aa;
+            transition: transform 0.3s;
+        }
+        header .user-info img:hover { transform: scale(1.1); }
+        header .user-info a { color: #ff4d4d; font-weight: bold; transition: 0.3s; }
+        header .user-info a:hover { color: #ff1a1a; }
+
+        /* Main content */
+        main {
+            margin-right: 250px;
+            margin-top: 60px;
+            padding: 25px;
+            min-height: calc(100vh - 60px);
+            transition: all 0.3s ease;
+        }
+
+        /* Footer */
+        footer {
+            margin-right: 250px;
+            text-align: center;
+            padding: 15px;
+            background: rgba(11,61,47,0.85);
+            backdrop-filter: blur(8px);
+            color: #1aff99;
+            position: relative;
+            font-weight: bold;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Cards / Glassmorphism */
+        .card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(12px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .card:hover { 
+            transform: translateY(-7px); 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4); 
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            background: #1aff99;
+            color: #000;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,255,153,0.3);
+            transition: all 0.3s;
+        }
+        .btn:hover { 
+            background: #12e68a;
+            box-shadow: 0 6px 18px rgba(0,255,153,0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1aff99;
+            color: #000;
+            padding: 14px 28px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,255,153,0.4);
+            display: none;
+            z-index: 1100;
+            font-weight: bold;
+            animation: toast-in 0.5s forwards, toast-out 0.5s forwards 3s;
+        }
+        @keyframes toast-in { from {opacity:0; transform: translate(-50%, -20px);} to {opacity:1; transform: translate(-50%, 0);} }
+        @keyframes toast-out { to {opacity:0; transform: translate(-50%, -20px);} }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar { width: 220px; }
+            header { right: 220px; }
+            main { margin-right: 220px; }
+            footer { margin-right: 220px; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(100%); }
+            .sidebar.active { transform: translateX(0); }
+            header { right: 0; }
+            main { margin: 0; }
+            footer { margin: 0; }
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-links">
-            {% if user.is_authenticated %}
-                <a href="{% url 'dashboard' %}">داشبورد</a>
-                <a href="{% url 'informationfund-list' %}">اطلاعات صندوق‌ها</a>
-                <a href="{% url 'deprivation-list' %}">محرومیت‌ها</a>
-                {% if user.is_admin %}
-                    <a href="{% url 'user-list' %}" style="color: #80cbc4;">(مدیریت کاربران)</a>
-                {% endif %}
-            {% endif %}
-        </div>
-        <div class="nav-user">
-            {% if user.is_authenticated %}
-                <span>سلام، {{ user.username }}</span>
-                <a href="{% url 'logout' %}">(خروج)</a>
-            {% else %}
-                <a href="{% url 'login' %}">ورود</a>
-            {% endif %}
-        </div>
-    </nav>
-    <div class="container">
-        {% block content %}
-        {% endblock %}
+
+<!-- Loader -->
+<div id="loader"><div class="spinner"></div></div>
+
+<!-- Toast Notification -->
+<div id="toast"></div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <h2>پنل مدیریت</h2>
+    <ul>
+        <li><a href="{% url 'dashboard' %}">داشبورد</a></li>
+        <li><a href="{% url 'user-list' %}">کاربران</a></li>
+        <li><a href="{% url 'informationfund-list' %}">صندوق‌ها</a></li>
+        <li><a href="{% url 'deprivation-list' %}">محرومیت‌ها</a></li>
+        <li><a href="{% url 'report-list' %}">گزارش‌ها</a></li>
+    </ul>
+</div>
+
+<!-- Header -->
+<header>
+    <div>
+        <button id="sidebar-toggle" class="btn">☰</button>
     </div>
+    <div class="user-info">
+        <span>{{ request.user.username }}</span>
+        <img src="{% static 'avatar.png' %}" alt="avatar">
+        <a href="{% url 'logout' %}">خروج</a>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+
+<!-- Footer -->
+<footer>
+    © 2025 تمام حقوق محفوظ است - توسعه توسط شما
+</footer>
+
+<!-- Inline JS -->
+<script>
+    // Loader
+    window.addEventListener('load', () => {
+        document.getElementById('loader').classList.add('hidden');
+    });
+
+    // Sidebar toggle
+    const sidebar = document.getElementById('sidebar');
+    document.getElementById('sidebar-toggle').addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+    });
+
+    // Toast function
+    function showToast(message, duration = 3000) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, duration);
+    }
+
+    // Example: showToast('خوش آمدید!');
+</script>
+
+{% block scripts %}{% endblock %}
+
 </body>
 </html>
