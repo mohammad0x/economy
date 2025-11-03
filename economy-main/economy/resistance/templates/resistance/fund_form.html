@@ -1,9 +1,76 @@
 {% extends 'resistance/base.html' %}
+
 {% block content %}
     <h1>{% if object %}ویرایش صندوق{% else %}ایجاد صندوق جدید{% endif %}</h1>
-    <form method="post">
+
+    <form method="post" novalidate>
         {% csrf_token %}
-        {{ form.as_p }}
+
+        {{ form.fund }}
+
+        <div>
+            {{ form.member.label_tag }}
+            {{ form.member }}
+        </div>
+        <div>
+            {{ form.NumberOfLoans.label_tag }}
+            {{ form.NumberOfLoans }}
+        </div>
+        <div>
+            {{ form.mony.label_tag }}
+            {{ form.mony }}
+        </div>
+        <div>
+            {{ form.quantity.label_tag }}
+            {{ form.quantity }}
+        </div>
+        <div>
+            {{ form.AfterTheSize.label_tag }}
+            {{ form.AfterTheSize }}
+        </div>
+
+        <hr>
+
+        <div>
+            {{ form.course.label_tag }}
+            {{ form.course }}
+        </div>
+
+        <div id="course_details" style="display: none; padding-right: 20px; border-right: 3px solid #00796b; margin-bottom: 1rem; margin-top: 1rem;">
+            <div>
+                {{ form.name_course.label_tag }}
+                {{ form.name_course }}
+            </div>
+            <div>
+                {{ form.member_course.label_tag }}
+                {{ form.member_course }}
+            </div>
+            <div>
+                {{ form.name_teacher.label_tag }}
+                {{ form.name_teacher }}
+            </div>
+            <div>
+                {{ form.phone_teacher.label_tag }}
+                {{ form.phone_teacher }}
+            </div>
+        </div>
+
+        <hr>
+
+        <div>
+            {{ form.bazaar.label_tag }}
+            {{ form.bazaar }}
+        </div>
+
+        <div id="bazaar_details" style="display: none; padding-right: 20px; border-right: 3px solid #00796b; margin-bottom: 1rem; margin-top: 1rem;">
+            <div>
+                {{ form.bazzar_desc.label_tag }}
+                {{ form.bazzar_desc }}
+            </div>
+        </div>
+
+        <hr>
+
         <button type="submit" class="btn">ذخیره</button>
         {% if object %}
             <a href="{% url 'informationfund-detail' object.fund.pk %}" class="btn btn-secondary">انصراف</a>
@@ -11,4 +78,39 @@
              <a href="{% url 'dashboard' %}" class="btn btn-secondary">انصراف</a>
         {% endif %}
     </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const courseRadios = document.querySelectorAll('input[name="course"]');
+            const courseDetails = document.getElementById('course_details');
+            const bazaarRadios = document.querySelectorAll('input[name="bazaar"]');
+            const bazaarDetails = document.getElementById('bazaar_details');
+
+            function toggleVisibility(radios, detailsElement, valueToShow) {
+                let selectedValue = '';
+                radios.forEach(radio => {
+                    if (radio.checked) {
+                        selectedValue = radio.value;
+                    }
+                });
+
+                if (selectedValue === valueToShow) {
+                    detailsElement.style.display = 'block';
+                } else {
+                    detailsElement.style.display = 'none';
+                }
+            }
+
+            courseRadios.forEach(radio => {
+                radio.addEventListener('change', () => toggleVisibility(courseRadios, courseDetails, 'Y'));
+            });
+
+            bazaarRadios.forEach(radio => {
+                radio.addEventListener('change', () => toggleVisibility(bazaarRadios, bazaarDetails, 'Y'));
+            });
+
+            toggleVisibility(courseRadios, courseDetails, 'Y');
+            toggleVisibility(bazaarRadios, bazaarDetails, 'Y');
+        });
+    </script>
 {% endblock %}

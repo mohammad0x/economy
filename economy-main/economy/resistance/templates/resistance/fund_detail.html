@@ -1,26 +1,44 @@
 {% extends 'resistance/base.html' %}
 
 {% block content %}
-    <h1>جزئیات صندوق: {{ fund.fund.name }}</h1>
-    <div class="detail-view">
-        <p><strong>شناسه صندوق:</strong> {{ fund.fund.name }} ({{ fund.fund.phone }})</p>
-        <p><strong>تعداد اعضا:</strong> {{ fund.member }}</p>
-        <p><strong>تعداد وام:</strong> {{ fund.NumberOfLoans }}</p>
-        <p><strong>مبلغ پرداختی:</strong> {{ fund.mony }}</p>
-        <p><strong>موجودی:</strong> {{ fund.quantity }}</p>
-        <p><strong>پس انداز:</strong> {{ fund.AfterTheSize }}</p>
-        <hr>
-        <p><strong>دوره آموزشی:</strong> {{ fund.get_course_display }}</p>
-        <p><strong>نام دوره:</strong> {{ fund.name_course|default:"-" }}</p>
-        <p><strong>تعداد شرکت کننده:</strong> {{ fund.member_course|default:"-" }}</p>
-        <p><strong>نام استاد:</strong> {{ fund.name_teacher|default:"-" }}</p>
-        <p><strong>شماره استاد:</strong> {{ fund.phone_teacher|default:"-" }}</p>
-        <hr>
-        <p><strong>بازارچه:</strong> {{ fund.get_bazaar_display }}</p>
-        <p><strong>توضیحات بازارچه:</strong> {{ fund.bazzar_desc|default:"-" }}</p>
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-light">
+        <h1 class="h5 mb-0">جزئیات تکمیلی صندوق: {{ fund.fund.name }}</h1>
     </div>
-    
-    <a href="{% url 'fund-update' fund.pk %}" class="btn">ویرایش</a>
-    <a href="{% url 'fund-delete' fund.pk %}" class="btn btn-delete">حذف</a>
-    <a href="{% url 'fund-list' %}" class="btn btn-secondary">بازگشت به لیست</a>
+    <div class="card-body p-4">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between"><strong>شناسه صندوق:</strong> <span>{{ fund.fund.name }} ({{ fund.fund.phone }})</span></li>
+            <li class="list-group-item d-flex justify-content-between"><strong>تعداد اعضا:</strong> <span>{{ fund.member }}</span></li>
+            <li class="list-group-item d-flex justify-content-between"><strong>تعداد وام:</strong> <span>{{ fund.NumberOfLoans }}</span></li>
+            <li class="list-group-item d-flex justify-content-between"><strong>مبلغ پرداختی:</strong> <span>{{ fund.mony }}</span></li>
+            <li class="list-group-item d-flex justify-content-between"><strong>موجودی:</strong> <span>{{ fund.quantity }}</span></li>
+            <li class="list-group-item d-flex justify-content-between"><strong>پس انداز:</strong> <span>{{ fund.AfterTheSize }}</span></li>
+        </ul>
+
+        <hr class="my-4">
+        <h4 class="h6">بخش دوره آموزشی</h4>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between"><strong>دوره آموزشی:</strong> <span>{{ fund.get_course_display }}</span></li>
+            <li class="list-group-item d-flex justify-content-between"><strong>نام دوره:</strong> <span>{{ fund.name_course|default:"-" }}</span></li>
+            <li class="list-group-item d-flex justify-content-between"><strong>تعداد شرکت کننده:</strong> <span>{{ fund.member_course|default:"-" }}</span></li>
+            <li class="list-group-item d-flex justify-content-between"><strong>نام استاد:</strong> <span>{{ fund.name_teacher|default:"-" }}</span></li>
+            <li class="list-group-item d-flex justify-content-between"><strong>شماره استاد:</strong> <span>{{ fund.phone_teacher|default:"-" }}</span></li>
+        </ul>
+
+        <hr class="my-4">
+        <h4 class="h6">بخش بازارچه</h4>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between"><strong>بازارچه:</strong> <span>{{ fund.get_bazaar_display }}</span></li>
+            <li class="list-group-item">
+                <strong>توضیحات بازارچه:</strong>
+                <p class="mt-2 text-muted">{{ fund.bazzar_desc|default:"-" }}</p>
+            </li>
+        </ul>
+    </div>
+    <div class="card-footer bg-light">
+        <a href="{% url 'fund-update' fund.pk %}" class="btn btn-warning">ویرایش</a>
+        <a href="{% url 'fund-delete' fund.pk %}" class="btn btn-danger">حذف</a>
+        <a href="{% url 'informationfund-detail' fund.fund.pk %}" class="btn btn-secondary">بازگشت به اطلاعات پایه</a>
+    </div>
+</div>
 {% endblock %}

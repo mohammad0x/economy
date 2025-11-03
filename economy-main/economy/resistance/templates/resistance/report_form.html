@@ -1,14 +1,22 @@
 {% extends 'resistance/base.html' %}
+{% load crispy_forms_tags %}
+
 {% block content %}
-    <h1>{% if object %}ویرایش گزارش{% else %}ایجاد گزارش جدید{% endif %}</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn">ذخیره</button>
-        {% if object %}
-            <a href="{% url 'deprivation-detail' object.deprivation.pk %}" class="btn btn-secondary">انصراف</a>
-        {% else %}
-             <a href="{% url 'dashboard' %}" class="btn btn-secondary">انصراف</a>
-        {% endif %}
-    </form>
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-light">
+        <h1 class="h5 mb-0">{% if object %}ویرایش گزارش{% else %}ایجاد گزارش جدید{% endif %}</h1>
+    </div>
+    <div class="card-body p-4">
+        <form method="post">
+            {% csrf_token %}
+            {% crispy form %}
+            <button type="submit" class="btn btn-success">ذخیره</button>
+            {% if object %}
+                <a href="{% url 'deprivation-detail' object.deprivation.pk %}" class="btn btn-secondary">انصراف</a>
+            {% else %}
+                 <a href="{% url 'deprivation-list' %}" class="btn btn-secondary">انصراف</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
 {% endblock %}

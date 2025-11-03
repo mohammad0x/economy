@@ -1,11 +1,17 @@
 {% extends 'resistance/base.html' %}
 
 {% block content %}
-    <h1>حذف کاربر</h1>
-    <p>آیا از حذف کاربر "<strong>{{ object.username }}</strong>" مطمئن هستید؟</p>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-delete">تایید حذف</button>
-        <a href="{% url 'user-detail' object.pk %}" class="btn btn-secondary">انصراف</a>
-    </form>
+<div class="card shadow-sm border-danger">
+    <div class="card-header bg-danger text-white">
+        <h1 class="h5 mb-0">حذف کاربر</h1>
+    </div>
+    <div class="card-body p-4">
+        <p>آیا از حذف کاربر "<strong>{{ object.username }}</strong>" مطمئن هستید؟</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">تایید حذف</button>
+            <a href="{% url 'user-detail' object.pk %}" class="btn btn-secondary">انصراف</a>
+        </form>
+    </div>
+</div>
 {% endblock %}

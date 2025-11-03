@@ -26,6 +26,8 @@ class FundForm(forms.ModelForm):
         fields = ['fund', 'member', 'NumberOfLoans', 'mony', 'quantity', 'AfterTheSize', 'course', 'bazaar', 'name_course', 'member_course', 'name_teacher', 'phone_teacher', 'bazzar_desc']
         widgets = {
             'fund': forms.HiddenInput(),
+            'course': forms.RadioSelect,
+            'bazaar': forms.RadioSelect,
         }
 
 class DeprivationForm(forms.ModelForm):

@@ -1,15 +1,34 @@
 {% extends 'resistance/base.html' %}
 
 {% block content %}
-    <h1>جزئیات کاربر: {{ user.username }}</h1>
-    <div class="detail-view">
-        <p><strong>تلفن:</strong> {{ user.phone }}</p>
-        <p><strong>نام کاربری:</strong> {{ user.username }}</p>
-        <p><strong>فعال:</strong> {% if user.is_active %}بله{% else %}خیر{% endif %}</p>
-        <p><strong>ادمین:</strong> {% if user.is_admin %}بله{% else %}خیر{% endif %}</p>
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-light">
+        <h1 class="h5 mb-0">جزئیات کاربر: {{ user.username }}</h1>
     </div>
-    
-    <a href="{% url 'user-update' user.pk %}" class="btn">ویرایش</a>
-    <a href="{% url 'user-delete' user.pk %}" class="btn btn-delete">حذف</a>
-    <a href="{% url 'user-list' %}" class="btn btn-secondary">بازگشت به لیست</a>
+    <div class="card-body p-4">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between">
+                <strong>تلفن:</strong>
+                <span>{{ user.phone }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+                <strong>نام کاربری:</strong>
+                <span>{{ user.username }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+                <strong>فعال:</strong>
+                <span>{% if user.is_active %}بله{% else %}خیر{% endif %}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+                <strong>ادمین:</strong>
+                <span>{% if user.is_admin %}بله{% else %}خیر{% endif %}</span>
+            </li>
+        </ul>
+    </div>
+    <div class="card-footer bg-light">
+        <a href="{% url 'user-update' user.pk %}" class="btn btn-warning">ویرایش</a>
+        <a href="{% url 'user-delete' user.pk %}" class="btn btn-danger">حذف</a>
+        <a href="{% url 'user-list' %}" class="btn btn-secondary">بازگشت به لیست</a>
+    </div>
+</div>
 {% endblock %}
