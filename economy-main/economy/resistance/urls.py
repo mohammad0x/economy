@@ -9,6 +9,7 @@ urlpatterns = [
         redirect_authenticated_user=True),
         name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    path('admin/profile/', views.admin_profile, name='admin-profile'),
 
     path('users/', views.MyUserListView.as_view(), name='user-list'),
     path('users/<int:pk>/', views.MyUserDetailView.as_view(), name='user-detail'),
@@ -39,5 +40,6 @@ urlpatterns = [
     path('reports/<int:pk>/edit/', views.ReportUpdateView.as_view(), name='report-update'),
     path('reports/<int:pk>/delete/', views.ReportDeleteView.as_view(), name='report-delete'),
     path('reports/', views.ReportListView.as_view(), name='report-list'),
+    path("dashboard/", views.AdminDashboardView.as_view(), name="dashboard"),
 
 ]

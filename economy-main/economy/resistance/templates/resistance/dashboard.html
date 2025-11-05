@@ -1,138 +1,200 @@
-{% extends 'base.html' %}
-{% load static %}
-
+{% extends "base.html" %}
 {% block title %}داشبورد{% endblock %}
 
 {% block content %}
-<!-- Dashboard Container -->
 <div class="dashboard-container">
 
-    <!-- Info Cards -->
-    <div class="cards-container">
-        <div class="card">
-            <h3>تعداد کاربران</h3>
-            <p>{{ users_count }}</p>
+    <!-- کارت‌های آمار -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <i class="fa-solid fa-users stat-icon"></i>
+            <h3>کاربران فعال</h3>
+            <span>{{ users_count }}</span>
         </div>
-        <div class="card">
-            <h3>تعداد صندوق‌ها</h3>
-            <p>{{ funds_count }}</p>
+        <div class="stat-card">
+            <i class="fa-solid fa-vault stat-icon"></i>
+            <h3>صندوق‌ها</h3>
+            <span>{{ funds_count }}</span>
         </div>
-        <div class="card">
-            <h3>تعداد محرومیت‌ها</h3>
-            <p>{{ deprivations_count }}</p>
+        <div class="stat-card">
+            <i class="fa-solid fa-hand-holding-heart stat-icon"></i>
+            <h3>افراد محروم</h3>
+            <span>{{ deprivation_count }}</span>
         </div>
-        <div class="card">
-            <h3>تعداد گزارش‌ها</h3>
-            <p>{{ reports_count }}</p>
+        <div class="stat-card">
+            <i class="fa-solid fa-file-lines stat-icon"></i>
+            <h3>گزارش‌ها</h3>
+            <span>{{ reports_count }}</span>
         </div>
     </div>
 
-    <!-- Search & Table -->
-    <div class="table-container">
-        <h3>جدول کاربران</h3>
-        <input type="text" id="search-input" placeholder="جستجو کاربران..." class="search-box">
-        <table id="users-table">
-            <thead>
-                <tr>
-                    <th>شماره تلفن</th>
-                    <th>نام کاربری</th>
-                    <th>فعال</th>
-                    <th>مدیریت</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in users %}
-                <tr>
-                    <td>{{ user.phone }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.is_active|yesno:"بله,خیر" }}</td>
-                    <td>
-                        <a href="{% url 'user-detail' user.pk %}">جزئیات</a> |
-                        <a href="{% url 'user-update' user.pk %}">ویرایش</a> |
-                        <a href="{% url 'user-delete' user.pk %}">حذف</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <!-- نمودارها -->
+    <div class="charts-grid">
+        <div class="chart-card">
+            <h3>وضعیت دوره صندوق‌ها</h3>
+            <canvas id="chartFundsCourse"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>تعداد وام‌ها و موجودی صندوق‌ها</h3>
+            <canvas id="chartFundLoans"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>تعداد گزارش‌ها بر اساس تاریخ</h3>
+            <canvas id="chartReportsTimeline"></canvas>
+        </div>
     </div>
 
 </div>
 
 <style>
-/* Dashboard Container */
-.dashboard-container { display: flex; flex-direction: column; gap: 30px; }
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-top: 20px;
+}
 
-/* Info Cards */
-.cards-container {
+/* کارت آمار */
+.stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 20px;
 }
-.card {
-    background: rgba(255,255,255,0.05);
+
+.stat-card {
+    background: var(--glass);
     backdrop-filter: blur(12px);
-    border-radius: 15px;
     padding: 20px;
-    color: #e0e0e0;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
     text-align: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    transition: transform 0.3s, box-shadow 0.3s;
+    color: var(--text-main);
+    transition: transform 0.3s ease, background 0.3s ease;
 }
-.card:hover {
-    transform: translateY(-7px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+.stat-card:hover {
+    transform: translateY(-5px);
+    background: var(--accent);
+    color: #000;
 }
-.card h3 { color: #1aff99; margin-bottom: 10px; }
-.card p { font-size: 24px; font-weight: bold; }
 
-/* Table */
-.table-container { background: rgba(11,61,47,0.85); padding: 20px; border-radius: 15px; backdrop-filter: blur(10px); }
-.table-container h3 { color: #1aff99; margin-bottom: 15px; }
-.search-box {
-    width: 100%;
-    padding: 10px 15px;
-    border-radius: 10px;
-    border: none;
-    outline: none;
+.stat-icon {
+    font-size: 30px;
+    margin-bottom: 10px;
+    color: var(--accent);
+    transition: color 0.3s ease;
+}
+.stat-card:hover .stat-icon {
+    color: #000;
+}
+
+.stat-card h3 { font-size: 16px; margin-bottom: 5px; }
+.stat-card span { font-size: 24px; font-weight: bold; }
+
+/* نمودارها */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.chart-card {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: -1px -13px 25px rgba(196, 189, 189, 0.74);
+    color: var(--text-main);
+}
+
+.chart-card h3 {
+    text-align: center;
     margin-bottom: 15px;
-    background: rgba(255,255,255,0.1);
-    color: #fff;
-    transition: all 0.3s;
+    color: var(--accent);
 }
-.search-box:focus { background: rgba(255,255,255,0.15); box-shadow: 0 0 10px #1aff99aa inset; }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    color: #e0e0e0;
-}
-th, td {
-    padding: 12px 10px;
-    text-align: center;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-tr:hover { background: rgba(26,255,153,0.1); }
-
-/* Responsive */
-@media (max-width: 768px) {
-    .cards-container { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
-    .table-container { overflow-x: auto; }
+/* ریسپانسیو */
+@media(max-width:768px){
+    .stats-grid, .charts-grid { grid-template-columns: 1fr; }
 }
 </style>
 
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// Table Search Filter
-document.getElementById('search-input').addEventListener('keyup', function() {
-    let filter = this.value.toLowerCase();
-    let rows = document.querySelectorAll('#users-table tbody tr');
-    rows.forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
+    // نمودار وضعیت دوره صندوق‌ها (دایره‌ای)
+    const ctx1 = document.getElementById('chartFundsCourse').getContext('2d');
+    new Chart(ctx1, {
+        type: 'doughnut',
+        data: {
+            labels: ['دارای دوره', 'بدون دوره'],
+            datasets: [{
+                label: 'وضعیت دوره',
+                data: [{{ funds_with_course }}, {{ funds_without_course }}],
+                backgroundColor: ['#C19A41', '#098368ff'],
+                borderColor: ['#fff','#fff'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom', labels: { color: 'var(--text-main)' } } }
+        }
     });
-});
 
-// Example Toast
-// showToast('خوش آمدید به داشبورد!');
+    // نمودار تعداد وام‌ها و موجودی صندوق‌ها (میله‌ای)
+    const ctx2 = document.getElementById('chartFundLoans').getContext('2d');
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: [{% for f in funds %}'{{ f.fund.name }}',{% endfor %}],
+            datasets: [
+                {
+                    label: 'تعداد وام',
+                    data: [{% for f in funds %}{{ f.NumberOfLoans }},{% endfor %}],
+                    backgroundColor: '#C19A41'
+                },
+                {
+                    label: 'موجودی',
+                    data: [{% for f in funds %}{{ f.quantity }},{% endfor %}],
+                    backgroundColor: '#1F3B2C'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: 'var(--text-main)' } } },
+            scales: {
+                y: { beginAtZero:true, ticks:{ color: 'var(--text-main)' } },
+                x: { ticks:{ color: 'var(--text-main)' } }
+            }
+        }
+    });
+
+    // نمودار تعداد گزارش‌ها بر اساس تاریخ (خطی)
+    const ctx3 = document.getElementById('chartReportsTimeline').getContext('2d');
+    new Chart(ctx3, {
+        type: 'line',
+        data: {
+            labels: [{% for d in reports_timeline %}'{{ d.date }}',{% endfor %}],
+            datasets: [{
+                label: 'تعداد گزارش',
+                data: [{% for d in reports_timeline %}{{ d.count }},{% endfor %}],
+                borderColor: '#C19A41',
+                backgroundColor: 'rgba(193,154,65,0.2)',
+                tension: 0.3,
+                fill:true,
+                pointBackgroundColor:'#1F3B2C'
+            }]
+        },
+        options: {
+            responsive:true,
+            plugins:{ legend:{ labels:{ color:'var(--text-main)' } } },
+            scales: {
+                y: { ticks:{ color:'var(--text-main)', beginAtZero:true } },
+                x: { ticks:{ color:'var(--text-main)' } }
+            }
+        }
+    });
+
 </script>
-
 {% endblock %}

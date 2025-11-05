@@ -253,3 +253,30 @@ class export_reports_excel():
         response['Content-Disposition'] = 'attachment; filename="reports.xlsx"'
         df.to_excel(response, index=False)
         return responseeconomy-main/economy/resistance/templates
+
+class AdminDashboardView(TemplateView):
+    template_name = "resistance/dashboard.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["total_users"] = MyUser.objects.count()
+        context["total_funds"] = InformationFund.objects.count()
+        context["total_active_funds"] = Fund.objects.count()
+        context["total_deprivations"] = Deprivation.objects.count()
+        context["total_reports"] = Report.objects.count()
+        return context
+    
+@login_required
+def admin_profile(request):
+    user = request.user
+    if request.method == 'POST':
+        form = AdminProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            # Toast پیام موفقیت
+            request.session['toast'] = 'تغییرات ذخیره شد!'
+            return redirect('admin-profile')
+    else:
+        form = AdminProfileForm(instance=user)
+    
+    return render(request, 'resistance/admin_profile.html', {'form': form})

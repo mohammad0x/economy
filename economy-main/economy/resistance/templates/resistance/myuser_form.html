@@ -1,47 +1,83 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}{% if object %}ویرایش کاربر{% else %}ثبت کاربر جدید{% endif %}{% endblock %}
+{% block title %}فرم کاربر{% endblock %}
 
 {% block content %}
-<div style="display:flex;justify-content:center;margin-top:40px;">
-    <div class="form-card">
-        <h2>{% if object %}ویرایش کاربر{% else %}ثبت کاربر جدید{% endif %}</h2>
-        <form method="post">
-            {% csrf_token %}
-            {% for field in form %}
-            <div class="form-group">
-                {{ field.label_tag }}
-                {{ field }}
-                {% if field.errors %}
-                    <div class="error">{{ field.errors|striptags }}</div>
-                {% endif %}
-            </div>
-            {% endfor %}
-            <button type="submit" class="btn">{% if object %}ویرایش{% else %}ثبت{% endif %}</button>
-        </form>
-    </div>
+<div class="glass-card">
+    <h2>فرم ثبت کاربر جدید</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label><i class="fas fa-phone"></i> شماره تلفن</label>
+            {{ form.phone }}
+        </div>
+        <div class="form-group">
+            <label><i class="fas fa-user"></i> نام کاربری</label>
+            {{ form.username }}
+        </div>
+        <div class="form-group">
+            <label><i class="fas fa-lock"></i> رمز عبور</label>
+            {{ form.password }}
+        </div>
+        <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> ثبت</button>
+    </form>
 </div>
+{% endblock %}
 
+{% block extra_css %}
 <style>
-.form-card {
-    width: 400px;
-    padding: 30px;
-    background: rgba(255,255,255,0.05);
+.glass-card {
+    max-width: 600px;
+    margin: auto;
+    background: rgba(255,255,255,0.08);
     backdrop-filter: blur(12px);
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-    color: #e0e0e0;
+    border-radius: 18px;
+    padding: 25px;
+    border: 1px solid rgba(255,255,255,0.18);
+    transition: 0.3s;
 }
-.form-card h2 {
-    text-align:center; color:#1aff99; margin-bottom:20px; text-shadow:0 0 10px #1aff99aa;
+.glass-card:hover { transform: translateY(-5px); border-color:#00ff88; }
+
+h2 { text-align:center; color:#b9ffb9; margin-bottom:20px; }
+
+.form-group { margin-bottom:15px; }
+label { display:block; color:#fff; margin-bottom:5px; font-weight:bold; }
+input, select, textarea {
+    width:100%; padding:10px; border-radius:10px;
+    border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.2); color:#fff;
+    transition:0.3s;
 }
-.form-group { margin-bottom:20px; text-align:right; }
-.form-group input { width:100%; padding:12px; border-radius:10px; border:none; outline:none;
-    background:rgba(255,255,255,0.1); color:#fff; transition: all 0.3s; box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);}
-.form-group input:focus { background: rgba(255,255,255,0.15); box-shadow: 0 0 10px #1aff99aa inset; transform: scale(1.02); }
-.error { color:#ff4d4d; font-size:13px; margin-top:5px; }
-.btn { width:100%; padding:12px; border-radius:12px; background:#1aff99; color:#000; font-weight:bold; font-size:16px; transition:all 0.3s; }
-.btn:hover { background:#12e68a; transform:translateY(-2px); }
+input:focus, select:focus, textarea:focus {
+    border-color:#00ff88; outline:none; box-shadow:0 0 10px rgba(0,255,136,0.5);
+}
+.submit-btn {
+    background: linear-gradient(135deg,#00ff88,#007744);
+    color:#fff; border:none; padding:12px 25px; border-radius:12px;
+    cursor:pointer; font-size:16px; transition:0.3s;
+}
+.submit-btn:hover { box-shadow:0 0 15px rgba(0,255,136,0.6); transform:scale(1.05); }
+
+@media(max-width:768px){
+    .glass-card { padding:15px; margin:15px; }
+    h2 { font-size:22px; }
+}
 </style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Toast ساده
+function showToast(msg, success=true){
+    const toast = document.getElementById("toast");
+    toast.innerText = msg;
+    toast.style.background = success?"#00cc44":"#cc0000";
+    toast.style.display="block";
+    setTimeout(()=>{ toast.style.display="none"; },2500);
+}
+
+// submit فرم با Toast
+document.querySelector(".glass-card form").addEventListener("submit",function(e){
+    showToast("فرم با موفقیت ارسال شد!");
+});
+</script>
 {% endblock %}

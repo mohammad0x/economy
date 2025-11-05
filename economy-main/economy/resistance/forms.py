@@ -42,3 +42,12 @@ class ReportForm(forms.ModelForm):
         widgets = {
             'deprivation': forms.HiddenInput(),
         }
+
+class AdminProfileForm(forms.ModelForm):
+    class Meta:
+        model = MyUser
+        fields = ['username', 'profile_image']
+        widgets = {
+            'username': forms.TextInput(attrs={'class':'form-control'}),
+            'profile_image': forms.FileInput(attrs={'class':'form-control'}),
+        }

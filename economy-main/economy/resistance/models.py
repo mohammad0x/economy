@@ -48,6 +48,9 @@ class MyUser(AbstractBaseUser):
 
     objects = MyUserManager()
 
+    profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+
+
     USERNAME_FIELD = "phone"
     REQUIRED_FIELDS = ["username"]
 
