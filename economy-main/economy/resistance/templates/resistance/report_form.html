@@ -1,14 +1,16 @@
 {% extends 'resistance/base.html' %}
 {% block content %}
-    <h1>{% if object %}ویرایش گزارش{% else %}ایجاد گزارش جدید{% endif %}</h1>
-    <form method="post">
+    <h1><i class="bi bi-file-earmark-plus-fill"></i> {% if object %}ویرایش گزارش{% else %}ایجاد گزارش جدید{% endif %}</h1>
+    
+    <form method="post" class="mt-4">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn">ذخیره</button>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-save-fill"></i> ذخیره</button>
+        
         {% if object %}
-            <a href="{% url 'deprivation-detail' object.deprivation.pk %}" class="btn btn-secondary">انصراف</a>
+            <a href="{% url 'deprivation-detail' object.deprivation.pk %}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> انصراف</a>
         {% else %}
-             <a href="{% url 'dashboard' %}" class="btn btn-secondary">انصراف</a>
+             <a href="{% url 'dashboard' %}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> انصراف</a>
         {% endif %}
     </form>
 {% endblock %}

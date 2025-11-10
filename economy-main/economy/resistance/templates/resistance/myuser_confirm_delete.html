@@ -1,11 +1,15 @@
 {% extends 'resistance/base.html' %}
-
 {% block content %}
-    <h1>حذف کاربر</h1>
-    <p>آیا از حذف کاربر "<strong>{{ object.username }}</strong>" مطمئن هستید؟</p>
+    <h1><i class="bi bi-exclamation-triangle-fill"></i> حذف کاربر</h1>
+    
+    <div class="alert alert-danger mt-4">
+        <p class="fs-5">آیا از حذف کاربر "<strong>{{ object.username }}</strong>" مطمئن هستید؟</p>
+        <p>این عملیات غیرقابل بازگشت است.</p>
+    </div>
+
     <form method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-delete">تایید حذف</button>
-        <a href="{% url 'user-detail' object.pk %}" class="btn btn-secondary">انصراف</a>
+        <button type="submit" class="btn btn-danger"><i class="bi bi-trash-fill"></i> تایید حذف</button>
+        <a href="{% url 'user-detail' object.pk %}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> انصراف</a>
     </form>
 {% endblock %}

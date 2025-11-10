@@ -1,20 +1,30 @@
 {% extends 'resistance/base.html' %}
 {% block content %}
-    <h1>ورود به سامانه</h1>
-    <p>لطفاً برای دسترسی به داشبورد وارد شوید.</p>
-    <form method="post">
-        {% csrf_token %}
-        {% if form.errors %}
-            <p style="color: red;">نام کاربری (تلفن) یا رمز عبور اشتباه است.</p>
-        {% endif %}
-        <p>
-            <label for="id_username">تلفن (نام کاربری):</label>
-            <input type="text" name="username" autofocus="" required="" id="id_username">
-        </p>
-        <p>
-            <label for="id_password">رمز عبور:</label>
-            <input type="password" name="password" required="" id="id_password">
-        </p>
-        <button type="submit" class="btn">ورود</button>
-    </form>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1><i class="bi bi-box-arrow-in-right"></i> ورود به سامانه</h1>
+            <p class="lead">لطفاً برای دسترسی به داشبورد وارد شوید.</p>
+            <form method="post" class="mt-4">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        نام کاربری (تلفن) یا رمز عبور اشتباه است.
+                    </div>
+                {% endif %}
+                
+                <div class="mb-3">
+                    <label for="id_username" class="form-label">تلفن (نام کاربری):</label>
+                    <input type="text" name="username" autofocus="" required="" id="id_username" class="form-control ltr">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_password" class="form-label">رمز عبور:</label>
+                    <input type="password" name="password" required="" id="id_password" class="form-control ltr">
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-check-lg"></i> ورود</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}

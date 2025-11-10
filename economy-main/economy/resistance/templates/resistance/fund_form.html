@@ -1,14 +1,176 @@
 {% extends 'resistance/base.html' %}
 {% block content %}
-    <h1>{% if object %}ویرایش صندوق{% else %}ایجاد صندوق جدید{% endif %}</h1>
-    <form method="post">
+    <h1><i class="bi bi-coin"></i> {% if object %}ویرایش صندوق{% else %}ایجاد صندوق جدید{% endif %}</h1>
+    
+    <form method="post" class="mt-4">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn">ذخیره</button>
+        
+        {{ form.fund }} 
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="{{ form.member.id_for_label }}" class="form-label">{{ form.member.label }}</label>
+                    {{ form.member }}
+                    {{ form.member.errors }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="{{ form.NumberOfLoans.id_for_label }}" class="form-label">{{ form.NumberOfLoans.label }}</label>
+                    {{ form.NumberOfLoans }}
+                    {{ form.NumberOfLoans.errors }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="{{ form.mony.id_for_label }}" class="form-label">{{ form.mony.label }}</label>
+                    {{ form.mony }}
+                    {{ form.mony.errors }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="{{ form.quantity.id_for_label }}" class="form-label">{{ form.quantity.label }}</label>
+                    {{ form.quantity }}
+                    {{ form.quantity.errors }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="{{ form.AfterTheSize.id_for_label }}" class="form-label">{{ form.AfterTheSize.label }}</label>
+                    {{ form.AfterTheSize }}
+                    {{ form.AfterTheSize.errors }}
+                </div>
+            </div>
+        </div>
+        
+        <hr class="my-4">
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="{{ form.course.id_for_label }}" class="form-label">{{ form.course.label }}</label>
+                    {{ form.course }}
+                    {{ form.course.errors }}
+                </div>
+            </div>
+        </div>
+        
+        <div id="course-fields" style="display: none;">
+            <div class="row bg-light p-3 border rounded">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="{{ form.name_course.id_for_label }}" class="form-label">{{ form.name_course.label }}</label>
+                        {{ form.name_course }}
+                        {{ form.name_course.errors }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="{{ form.member_course.id_for_label }}" class="form-label">{{ form.member_course.label }}</label>
+                        {{ form.member_course }}
+                        {{ form.member_course.errors }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="{{ form.name_teacher.id_for_label }}" class="form-label">{{ form.name_teacher.label }}</label>
+                        {{ form.name_teacher }}
+                        {{ form.name_teacher.errors }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="{{ form.phone_teacher.id_for_label }}" class="form-label">{{ form.phone_teacher.label }}</label>
+                        {{ form.phone_teacher }}
+                        {{ form.phone_teacher.errors }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <hr class="my-4">
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="{{ form.bazaar.id_for_label }}" class="form-label">{{ form.bazaar.label }}</label>
+                    {{ form.bazaar }}
+                    {{ form.bazaar.errors }}
+                </div>
+            </div>
+        </div>
+
+        <div id="bazaar-fields" style="display: none;">
+            <div class="row bg-light p-3 border rounded">
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label for="{{ form.bazzar_desc.id_for_label }}" class="form-label">{{ form.bazzar_desc.label }}</label>
+                        {{ form.bazzar_desc }}
+                        {{ form.bazzar_desc.errors }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <button type="submit" class="btn btn-primary"><i class="bi bi-save-fill"></i> ذخیره</button>
         {% if object %}
-            <a href="{% url 'informationfund-detail' object.fund.pk %}" class="btn btn-secondary">انصراف</a>
+            <a href="{% url 'informationfund-detail' object.fund.pk %}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> انصراف</a>
         {% else %}
-             <a href="{% url 'dashboard' %}" class="btn btn-secondary">انصراف</a>
+             <a href="{% url 'dashboard' %}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> انصراف</a>
         {% endif %}
     </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // بخش ۱: اعمال استایل به فیلدهای رندر شده دستی
+            // (اسکریپت سراسری اینها را پیدا نمی‌کند چون در تگ <p> نیستند)
+            document.querySelectorAll('form input, form textarea, form select').forEach(function(el) {
+                if (el.tagName === 'TEXTAREA') {
+                    el.classList.add('form-control');
+                    el.rows = 4;
+                } else if (el.tagName === 'SELECT') {
+                    el.classList.add('form-select');
+                } else if (el.type && el.type !== 'checkbox' && el.type !== 'radio' && el.type !== 'submit' && el.type !== 'hidden' && el.type !== 'button') {
+                    el.classList.add('form-control');
+                }
+            });
+
+            // --- بخش ۲: منطق داینامیک فرم ---
+            
+            // گرفتن عناصر
+            const courseSelect = document.getElementById('{{ form.course.id_for_label }}');
+            const courseFields = document.getElementById('course-fields');
+            
+            const bazaarSelect = document.getElementById('{{ form.bazaar.id_for_label }}');
+            const bazaarFields = document.getElementById('bazaar-fields');
+
+            // تابع برای بررسی و نمایش/مخفی کردن
+            function toggleFields() {
+                // منطق دوره
+                if (courseSelect.value === 'Y') {
+                    courseFields.style.display = 'block';
+                } else {
+                    courseFields.style.display = 'none';
+                }
+                
+                // منطق بازارچه
+                if (bazaarSelect.value === 'Y') {
+                    bazaarFields.style.display = 'block';
+                } else {
+                    bazaarFields.style.display = 'none';
+                }
+            }
+
+            // اضافه کردن Event Listener
+            courseSelect.addEventListener('change', toggleFields);
+            bazaarSelect.addEventListener('change', toggleFields);
+            
+            // اجرای تابع در لحظه بارگذاری صفحه (برای ویرایش)
+            toggleFields();
+        });
+    </script>
 {% endblock %}

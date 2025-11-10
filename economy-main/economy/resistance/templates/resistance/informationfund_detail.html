@@ -1,25 +1,30 @@
 {% extends 'resistance/base.html' %}
 {% block content %}
-    <h1>جزئیات: {{ fund.name }}</h1>
-    <div class="detail-view">
+    <h1><i class="bi bi-archive-fill"></i> جزئیات: {{ fund.name }}</h1>
+    
+    <div class="detail-view mt-4">
         <p><strong>نام و نام خانوادگی:</strong> {{ fund.name }}</p>
         <p><strong>کد ملی:</strong> {{ fund.nCode }}</p>
         <p><strong>نام پدر:</strong> {{ fund.fName }}</p>
         <p><strong>شماره تلفن:</strong> {{ fund.phone }}</p>
         <p><strong>کد گروه:</strong> {{ fund.cGroup }}</p>
     </div>
-    <hr>
-    <h3>اطلاعات تکمیلی صندوق</h3>
+    
+    <div class="mt-4">
+        <a href="{% url 'informationfund-update' fund.pk %}" class="btn btn-warning text-dark"><i class="bi bi-pencil-fill"></i> ویرایش اطلاعات پایه</a>
+        <a href="{% url 'informationfund-delete' fund.pk %}" class="btn btn-danger"><i class="bi bi-trash-fill"></i> حذف کامل</a>
+        <a href="{% url 'informationfund-list' %}" class="btn btn-secondary"><i class="bi bi-arrow-right-circle"></i> بازگشت به لیست</a>
+    </div>
+
+    <hr class="my-4">
+
+    <h3><i class="bi bi-coin"></i> اطلاعات تکمیلی صندوق</h3>
     {% if fund.fund %}
         <p>اطلاعات تکمیلی این صندوق قبلا ثبت شده است.</p>
-        <a href="{% url 'fund-detail' fund.fund.pk %}" class="btn">مشاهده اطلاعات تکمیلی</a>
-        <a href="{% url 'fund-update' fund.fund.pk %}" class="btn btn-secondary">ویرایش اطلاعات تکمیلی</a>
+        <a href="{% url 'fund-detail' fund.fund.pk %}" class="btn btn-info text-white"><i class="bi bi-eye-fill"></i> مشاهده اطلاعات تکمیلی</a>
+        <a href="{% url 'fund-update' fund.fund.pk %}" class="btn btn-warning text-dark"><i class="bi bi-pencil-fill"></i> ویرایش اطلاعات تکمیلی</a>
     {% else %}
-        <p>اطلاعات تکمیلی (موجودی، وام‌ها و...) برای این صندوق ثبت نشده است.</p>
-        <a href="{% url 'fund-create' fund.pk %}" class="btn">افزودن اطلاعات تکمیلی صندوق</a>
+        <div class="alert alert-warning">اطلاعات تکمیلی (موجودی، وام‌ها و...) برای این صندوق ثبت نشده است.</div>
+        <a href="{% url 'fund-create' fund.pk %}" class="btn btn-success"><i class="bi bi-plus-circle-fill"></i> افزودن اطلاعات تکمیلی</a>
     {% endif %}
-    <hr style="margin-top: 2rem;">
-    <a href="{% url 'informationfund-update' fund.pk %}" class="btn">ویرایش اطلاعات پایه</a>
-    <a href="{% url 'informationfund-delete' fund.pk %}" class="btn btn-delete">حذف کامل</a>
-    <a href="{% url 'informationfund-list' %}" class="btn btn-secondary">بازگشت به لیست</a>
 {% endblock %}

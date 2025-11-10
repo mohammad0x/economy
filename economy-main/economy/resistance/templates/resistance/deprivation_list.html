@@ -1,38 +1,44 @@
 {% extends 'resistance/base.html' %}
-
 {% block content %}
-    <h1>لیست محرومیت‌زدایی</h1>
-    <a href="{% url 'deprivation-create' %}" class="btn">ایجاد رکورد جدید</a>
-    <table>
-        <thead>
-            <tr>
-                <th>نام و نام خانوادگی</th>
-                <th>کد ملی</th>
-                <th>شماره تلفن</th>
-                <th>کد گروه</th>
-                <th>نام صندوق</th>
-                <th>عملیات</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in deprivations %}
-            <tr>
-                <td>{{ item.name }}</td>
-                <td>{{ item.nCode }}</td>
-                <td>{{ item.phone }}</td>
-                <td>{{ item.cGroup }}</td>
-                <td>{{ item.fund_name|default:"-" }}</td>
-                <td class="actions">
-                    <a href="{% url 'deprivation-detail' item.pk %}">جزئیات</a>
-                    <a href="{% url 'deprivation-update' item.pk %}">ویرایش</a>
-                    <a href="{% url 'deprivation-delete' item.pk %}" class="delete">حذف</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6">هیچ رکوردی یافت نشد.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-people-fill"></i> لیست محرومیت‌زدایی</h1>
+        <a href="{% url 'deprivation-create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle-fill"></i> ایجاد رکورد جدید
+        </a>
+    </div>
+
+    <div class="table-responsive shadow-sm">
+        <table class="table table-striped table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>نام و نام خانوادگی</th>
+                    <th>کد ملی</th>
+                    <th>شماره تلفن</th>
+                    <th>کد گروه</th>
+                    <th>نام صندوق</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in deprivations %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.nCode }}</td>
+                    <td>{{ item.phone }}</td>
+                    <td>{{ item.cGroup }}</td>
+                    <td>{{ item.fund_name|default:"-" }}</td>
+                    <td class="actions">
+                        <a href="{% url 'deprivation-detail' item.pk %}" class="btn btn-sm btn-info text-white" title="جزئیات"><i class="bi bi-eye-fill"></i></a>
+                        <a href="{% url 'deprivation-update' item.pk %}" class="btn btn-sm btn-warning text-dark" title="ویرایش"><i class="bi bi-pencil-fill"></i></a>
+                        <a href="{% url 'deprivation-delete' item.pk %}" class="btn btn-sm btn-danger" title="حذف"><i class="bi bi-trash-fill"></i></a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center p-4">هیچ رکوردی یافت نشد.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

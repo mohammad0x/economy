@@ -1,36 +1,39 @@
 {% extends 'resistance/base.html' %}
-
 {% block content %}
-    <h1>لیست صندوق‌ها</h1>
-    <a href="{% url 'fund-create' %}" class="btn">ایجاد صندوق جدید</a>
-    <table>
-        <thead>
-            <tr>
-                <th>شناسه صندوق (نام)</th>
-                <th>تعداد اعضا</th>
-                <th>تعداد وام</th>
-                <th>موجودی</th>
-                <th>عملیات</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for fund in funds %}
-            <tr>
-                <td>{{ fund.fund.name }}</td>
-                <td>{{ fund.member }}</td>
-                <td>{{ fund.NumberOfLoans }}</td>
-                <td>{{ fund.quantity }}</td>
-                <td class="actions">
-                    <a href="{% url 'fund-detail' fund.pk %}">جزئیات</a>
-                    <a href="{% url 'fund-update' fund.pk %}">ویرایش</a>
-                    <a href="{% url 'fund-delete' fund.pk %}" class="delete">حذف</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5">هیچ صندوقی یافت نشد.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-coin"></i> لیست صندوق‌ها</h1>
+        </div>
+
+    <div class="table-responsive shadow-sm">
+        <table class="table table-striped table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>شناسه صندوق (نام)</th>
+                    <th>تعداد اعضا</th>
+                    <th>تعداد وام</th>
+                    <th>موجودی</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fund in funds %}
+                <tr>
+                    <td>{{ fund.fund.name }}</td>
+                    <td>{{ fund.member }}</td>
+                    <td>{{ fund.NumberOfLoans }}</td>
+                    <td>{{ fund.quantity }}</td>
+                    <td class="actions">
+                        <a href="{% url 'fund-detail' fund.pk %}" class="btn btn-sm btn-info text-white" title="جزئیات"><i class="bi bi-eye-fill"></i></a>
+                        <a href="{% url 'fund-update' fund.pk %}" class="btn btn-sm btn-warning text-dark" title="ویرایش"><i class="bi bi-pencil-fill"></i></a>
+                        <a href="{% url 'fund-delete' fund.pk %}" class="btn btn-sm btn-danger" title="حذف"><i class="bi bi-trash-fill"></i></a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center p-4">هیچ صندوقی یافت نشد.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

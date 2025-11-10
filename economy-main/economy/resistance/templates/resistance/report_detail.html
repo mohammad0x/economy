@@ -1,20 +1,22 @@
 {% extends 'resistance/base.html' %}
-
 {% block content %}
-    <h1>جزئیات گزارش: {{ report.subject }}</h1>
-    <div class="detail-view">
-        <p><strong>مربوط به:</strong> {{ report.deprivation.name }}</small>
+    <h1><i class="bi bi-file-earmark-text-fill"></i> جزئیات گزارش: {{ report.subject }}</h1>
+
+    <div class="detail-view mt-4">
+        <p><strong>مربوط به:</strong> {{ report.deprivation.name }}</p>
         <p><strong>موضوع:</strong> {{ report.subject }}</p>
         <p><strong>تاریخ انجام:</strong> {{ report.date }}</p>
         <p><strong>آدرس:</strong> {{ report.address }}</p>
         <p><strong>تعداد اعضا:</strong> {{ report.member }}</p>
         <p><strong>توضیحات:</strong></p>
-        <div style="background: #f9f9f9; padding: 1rem; border-radius: 4px; border: 1px solid #eee;">
-            {{ report.desc|linebreaks }}
+        <div class="bg-light p-3 border rounded" style="white-space: pre-wrap;">
+            {{ report.desc|linebreaksbr }}
         </div>
     </div>
     
-    <a href="{% url 'report-update' report.pk %}" class="btn">ویرایش</a>
-    <a href="{% url 'report-delete' report.pk %}" class="btn btn-delete">حذف</a>
-    <a href="{% url 'report-list' %}" class="btn btn-secondary">بازگشت به لیست</a>
+    <div class="mt-4">
+        <a href="{% url 'report-update' report.pk %}" class="btn btn-warning text-dark"><i class="bi bi-pencil-fill"></i> ویرایش</a>
+        <a href="{% url 'report-delete' report.pk %}" class="btn btn-danger"><i class="bi bi-trash-fill"></i> حذف</a>
+        <a href="{% url 'report-list' %}" class="btn btn-secondary"><i class="bi bi-arrow-right-circle"></i> بازگشت به لیست</a>
+    </div>
 {% endblock %}

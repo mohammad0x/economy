@@ -97,14 +97,13 @@ class Fund(models.Model):
     mony = models.CharField(max_length=30, verbose_name="مبلغ پرداختی")
     quantity = models.CharField(max_length=30, verbose_name="موجودی")
     AfterTheSize = models.CharField(max_length=30, verbose_name="پس انداز")
-    course = models.CharField(max_length=1, choices=COURSE_CHOICES)
-    bazaar = models.CharField(max_length=1, choices=BAZZAR_CHOICES)
-    name_course = models.CharField(max_length=100, blank=False, null=True, verbose_name="نام دوره")
-    member_course = models.CharField(max_length=100, blank=False, null=True, verbose_name="تعداد شرکت کننده")
-    name_teacher = models.CharField(max_length=100, blank=False, null=True, verbose_name="نام استاد")
-    phone_teacher = models.CharField(max_length=11, blank=False, null=True, verbose_name="شماره استاد")
-    bazzar_desc = models.TextField(blank=False, null=True, verbose_name="توضیحات بازارچه")
-
+    course = models.CharField(max_length=1, choices=COURSE_CHOICES, verbose_name="دوره آموزشی برگزار شد؟")
+    bazaar = models.CharField(max_length=1, choices=BAZZAR_CHOICES, verbose_name="بازارچه برگزار شد؟")
+    name_course = models.CharField(max_length=100, blank=True, null=True, verbose_name="نام دوره")
+    member_course = models.CharField(max_length=100, blank=True, null=True, verbose_name="تعداد شرکت کننده")
+    name_teacher = models.CharField(max_length=100, blank=True, null=True, verbose_name="نام استاد")
+    phone_teacher = models.CharField(max_length=11, blank=True, null=True, verbose_name="شماره استاد")
+    bazzar_desc = models.TextField(blank=True, null=True, verbose_name="توضیحات بازارچه")
     def __str__(self):
         return self.fund.name
 

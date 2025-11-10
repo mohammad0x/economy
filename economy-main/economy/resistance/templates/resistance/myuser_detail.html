@@ -1,15 +1,17 @@
 {% extends 'resistance/base.html' %}
-
 {% block content %}
-    <h1>جزئیات کاربر: {{ user.username }}</h1>
-    <div class="detail-view">
+    <h1><i class="bi bi-person-lines-fill"></i> جزئیات کاربر: {{ user.username }}</h1>
+    
+    <div class="detail-view mt-4">
         <p><strong>تلفن:</strong> {{ user.phone }}</p>
         <p><strong>نام کاربری:</strong> {{ user.username }}</p>
-        <p><strong>فعال:</strong> {% if user.is_active %}بله{% else %}خیر{% endif %}</p>
-        <p><strong>ادمین:</strong> {% if user.is_admin %}بله{% else %}خیر{% endif %}</p>
+        <p><strong>فعال:</strong> {% if user.is_active %}<span class="badge bg-success">بله</span>{% else %}<span class="badge bg-danger">خیر</span>{% endif %}</p>
+        <p><strong>ادمین:</strong> {% if user.is_admin %}<span class="badge bg-success">بله</span>{% else %}<span class="badge bg-danger">خیر</span>{% endif %}</p>
     </div>
     
-    <a href="{% url 'user-update' user.pk %}" class="btn">ویرایش</a>
-    <a href="{% url 'user-delete' user.pk %}" class="btn btn-delete">حذف</a>
-    <a href="{% url 'user-list' %}" class="btn btn-secondary">بازگشت به لیست</a>
+    <div class="mt-4">
+        <a href="{% url 'user-update' user.pk %}" class="btn btn-warning text-dark"><i class="bi bi-pencil-fill"></i> ویرایش</a>
+        <a href="{% url 'user-delete' user.pk %}" class="btn btn-danger"><i class="bi bi-trash-fill"></i> حذف</a>
+        <a href="{% url 'user-list' %}" class="btn btn-secondary"><i class="bi bi-arrow-right-circle"></i> بازگشت به لیست</a>
+    </div>
 {% endblock %}

@@ -1,13 +1,32 @@
 {% extends 'resistance/base.html' %}
 {% block content %}
-    <h1>داشبورد</h1>
-    <p>خوش آمدید، {{ user.username }}.</p>
-    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-        <a href="{% url 'informationfund-list' %}" class="btn" style="flex: 1; text-align: center; padding: 2rem; font-size: 1.2rem;">
-            مدیریت اطلاعات صندوق‌ها
-        </a>
-        <a href="{% url 'deprivation-list' %}" class="btn" style="flex: 1; text-align: center; padding: 2rem; font-size: 1.2rem;">
-            مدیریت محرومیت‌زدایی
-        </a>
+    <h1><i class="bi bi-grid-fill"></i> داشبورد</h1>
+    <p class="lead">خوش آمدید، {{ user.username }}. از این پنل می‌توانید به بخش‌های مختلف سامانه دسترسی داشته باشید.</p>
+    
+    <div class="row g-4 mt-4">
+        <div class="col-md-6">
+            <div class="dashboard-card">
+                <div class="card-body">
+                    <div class="card-icon"><i class="bi bi-box-seam"></i></div>
+                    <h5 class="card-title">مدیریت اطلاعات صندوق‌ها</h5>
+                    <p class="card-text">مشاهده، ویرایش و ثبت اطلاعات پایه و تکمیلی صندوق‌ها.</p>
+                    <a href="{% url 'informationfund-list' %}" class="btn btn-primary mt-3">
+                        <i class="bi bi-arrow-left-circle"></i> رفتن به بخش صندوق‌ها
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="dashboard-card">
+                <div class="card-body">
+                    <div class="card-icon"><i class="bi bi-people-fill"></i></div>
+                    <h5 class="card-title">مدیریت محرومیت‌زدایی</h5>
+                    <p class="card-text">ثبت، پیگیری و گزارش‌دهی فعالیت‌های مربوط به محرومیت‌زدایی.</p>
+                    <a href="{% url 'deprivation-list' %}" class="btn btn-primary mt-3">
+                        <i class="bi bi-arrow-left-circle"></i> رفتن به بخش محرومیت‌زدایی
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

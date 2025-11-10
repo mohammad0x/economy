@@ -1,11 +1,14 @@
 {% extends 'resistance/base.html' %}
-
 {% block content %}
-    <h1>حذف صندوق</h1>
-    <p>آیا از حذف صندوق "<strong>{{ object.fund.name }}</strong>" مطمئن هستید؟</p>
+    <h1><i class="bi bi-exclamation-triangle-fill"></i> حذف صندوق</h1>
+
+    <div class="alert alert-danger mt-4">
+        <p class="fs-5">آیا از حذف صندوق "<strong>{{ object.fund.name }}</strong>" مطمئن هستید؟</p>
+    </div>
+
     <form method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-delete">تایید حذف</button>
-        <a href="{% url 'fund-detail' object.pk %}" class="btn btn-secondary">انصراف</a>
+        <button type="submit" class="btn btn-danger"><i class="bi bi-trash-fill"></i> تایید حذف</button>
+        <a href="{% url 'fund-detail' object.pk %}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> انصراف</a>
     </form>
 {% endblock %}
