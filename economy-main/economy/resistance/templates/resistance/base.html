@@ -4,280 +4,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}پنل مدیریت{% endblock %}</title>
 
-    <!-- Favicon -->
-    <link rel="icon" href="{% static 'img/icon.png'  %}" type="image/icon">
+    <title>{% block title %}سامانه مدیریت{% endblock %}</title>
 
-    <!-- Inline CSS -->
-    <style>
-        /* Reset & Base */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Vazir', sans-serif; }
-        body { 
-            background: linear-gradient(135deg, #0b3d2f, #06402a); 
-            color: #e0e0e0; 
-            transition: background 0.3s, color 0.3s; 
-            overflow-x: hidden;
-        }
-        a { color: inherit; text-decoration: none; }
-        ul { list-style: none; }
-        button { cursor: pointer; border: none; outline: none; background: none; }
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-        /* Loader */
-        #loader {
-            position: fixed;
-            inset: 0;
-            background: rgba(11,61,47,0.95);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-        #loader.hidden { opacity: 0; visibility: hidden; }
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 6px solid #ffffff33;
-            border-top: 6px solid #1aff99;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            box-shadow: 0 0 20px #1aff99aa;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600&display=swap" rel="stylesheet">
 
-        /* Sidebar */
-        .sidebar {
-            position: fixed;
-            right: 0;
-            top: 0;
-            width: 250px;
-            height: 100vh;
-            background: rgba(11,61,47,0.9);
-            backdrop-filter: blur(12px);
-            display: flex;
-            flex-direction: column;
-            padding: 20px 15px;
-            transition: transform 0.3s ease;
-            z-index: 1000;
-            box-shadow: -2px 0 15px rgba(0,0,0,0.3);
-        }
-        .sidebar h2 { 
-            text-align: center; 
-            margin-bottom: 25px; 
-            color: #1aff99; 
-            text-shadow: 0 0 10px #1aff99aa;
-        }
-        .sidebar ul li { margin: 15px 0; }
-        .sidebar ul li a { 
-            display: block; 
-            padding: 12px; 
-            border-radius: 10px; 
-            transition: 0.3s; 
-            position: relative;
-        }
-        .sidebar ul li a::before {
-            content: '';
-            position: absolute;
-            left: -5px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 5px;
-            height: 5px;
-            background: #1aff99;
-            border-radius: 50%;
-            opacity: 0;
-            transition: 0.3s;
-        }
-        .sidebar ul li a:hover::before { opacity: 1; transform: translateY(-50%) scale(1.5); }
-        .sidebar ul li a:hover { background: #1aff9933; box-shadow: 0 4px 15px #1aff9944; }
-
-        /* Header */
-        header {
-            position: fixed;
-            right: 250px;
-            left: 0;
-            top: 0;
-            height: 60px;
-            background: rgba(11,61,47,0.85);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 900;
-            color: #e0e0e0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            transition: background 0.3s;
-        }
-        header .user-info { display: flex; align-items: center; gap: 15px; }
-        header .user-info img { 
-            width: 40px; height: 40px; 
-            border-radius: 50%; 
-            border: 2px solid #1aff99; 
-            box-shadow: 0 0 10px #1aff99aa;
-            transition: transform 0.3s;
-        }
-        header .user-info img:hover { transform: scale(1.1); }
-        header .user-info a { color: #ff4d4d; font-weight: bold; transition: 0.3s; }
-        header .user-info a:hover { color: #ff1a1a; }
-
-        /* Main content */
-        main {
-            margin-right: 250px;
-            margin-top: 60px;
-            padding: 25px;
-            min-height: calc(100vh - 60px);
-            transition: all 0.3s ease;
-        }
-
-        /* Footer */
-        footer {
-            margin-right: 250px;
-            text-align: center;
-            padding: 15px;
-            background: rgba(11,61,47,0.85);
-            backdrop-filter: blur(8px);
-            color: #1aff99;
-            position: relative;
-            font-weight: bold;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
-        }
-
-        /* Cards / Glassmorphism */
-        .card {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(12px);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .card:hover { 
-            transform: translateY(-7px); 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4); 
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 10px 20px;
-            border-radius: 10px;
-            background: #1aff99;
-            color: #000;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0,255,153,0.3);
-            transition: all 0.3s;
-        }
-        .btn:hover { 
-            background: #12e68a;
-            box-shadow: 0 6px 18px rgba(0,255,153,0.5);
-            transform: translateY(-2px);
-        }
-
-        /* Toast */
-        #toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1aff99;
-            color: #000;
-            padding: 14px 28px;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0,255,153,0.4);
-            display: none;
-            z-index: 1100;
-            font-weight: bold;
-            animation: toast-in 0.5s forwards, toast-out 0.5s forwards 3s;
-        }
-        @keyframes toast-in { from {opacity:0; transform: translate(-50%, -20px);} to {opacity:1; transform: translate(-50%, 0);} }
-        @keyframes toast-out { to {opacity:0; transform: translate(-50%, -20px);} }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .sidebar { width: 220px; }
-            header { right: 220px; }
-            main { margin-right: 220px; }
-            footer { margin-right: 220px; }
-        }
-        @media (max-width: 768px) {
-            .sidebar { transform: translateX(100%); }
-            .sidebar.active { transform: translateX(0); }
-            header { right: 0; }
-            main { margin: 0; }
-            footer { margin: 0; }
-        }
-    </style>
-</head>
-<body>
-
-<!-- Loader -->
-<div id="loader"><div class="spinner"></div></div>
-
-<!-- Toast Notification -->
-<div id="toast"></div>
-
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-    <h2>پنل مدیریت</h2>
-    <ul>
-        <li><a href="{% url 'dashboard' %}">داشبورد</a></li>
-        <li><a href="{% url 'user-list' %}">کاربران</a></li>
-        <li><a href="{% url 'informationfund-list' %}">صندوق‌ها</a></li>
-        <li><a href="{% url 'deprivation-list' %}">محرومیت‌ها</a></li>
-        <li><a href="{% url 'report-list' %}">گزارش‌ها</a></li>
-    </ul>
-</div>
-
-<!-- Header -->
-<header>
-    <div>
-        <button id="sidebar-toggle" class="btn">☰</button>
-    </div>
-    <div class="user-info">
-        <span>{{ request.user.username }}</span>
-        <img src="{% static 'avatar.png' %}" alt="avatar">
-        <a href="{% url 'logout' %}">خروج</a>
-    </div>
-</header>
-
-<!-- Main Content -->
-<main>
-    {% block content %}
-    {% endblock %}
-</main>
-
-<!-- Footer -->
-<footer>
-    © 2025 تمام حقوق محفوظ است - توسعه توسط شما
-</footer>
-
-<!-- Inline JS -->
-<script>
-    // Loader
-    window.addEventListener('load', () => {
-        document.getElementById('loader').classList.add('hidden');
-    });
-
-    // Sidebar toggle
-    const sidebar = document.getElementById('sidebar');
-    document.getElementById('sidebar-toggle').addEventListener('click', () => {
-        sidebar.classList.toggle('active');
-    });
-
-    // Toast function
-    function showToast(message, duration = 3000) {
-        const toast = document.getElementById('toast');
-        toast.textContent = message;
-        toast.style.display = 'block';
-        setTimeout(() => { toast.style.display = 'none'; }, duration);
+<style>
+    :root {
+        --bg: #0e1412;
+        --card: #16241e;
+        --accent: #24c378;
+        --text: #e5e5e5;
+        --hover: #1e2f26;
+        /* 🆕 تعریف متغیرهای جدید برای سازگاری بهتر با کد قبلی */
+        --sidebar-bg: var(--card);
+        --border-color: rgba(31, 239, 143, 0.2); 
+        --link-color: var(--accent);
+        --text-muted: #999;
     }
 
-    // Example: showToast('خوش آمدید!');
-</script>
+    body {
+        margin: 0;
+        font-family: "Vazirmatn", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+    }
 
-{% block scripts %}{% endblock %}
+    .layout {
+        display: flex;
+        height: 100vh;
+    }
 
+    /* Sidebar */
+    .sidebar {
+        width: 260px;
+        background: var(--card);
+        box-shadow: 0 0 20px rgba(0,0,0,0.4);
+        display: flex;
+        flex-direction: column;
+        padding-top: 20px;
+        /* 🆕 استایل‌های مربوط به ریسپانسیو برای حالت جمع شدن */
+        transition: width 0.3s ease; 
+    }
+
+    .sidebar h2 {
+        font-size: 18px;
+        text-align: center;
+        margin-bottom: 25px;
+        color: var(--accent);
+    }
+
+    .menu a {
+        display: flex;
+        align-items: center;
+        padding: 13px 20px;
+        color: var(--text);
+        text-decoration: none;
+        font-size: 14px;
+        transition: background 0.2s ease;
+    }
+    
+    .menu a i {
+        margin-left: 12px;
+        font-size: 16px;
+    }
+
+    .menu a:hover,
+    .menu a.active {
+        background: var(--hover);
+        color: var(--accent);
+    }
+
+
+    /* Content */
+    .content {
+        flex: 1;
+        padding: 25px;
+        overflow-y: auto;
+    }
+
+    /* 🆕 کلاس جدید برای وسط قرار دادن محتوای کوچک (فرم‌ها، کارت‌های تأیید) */
+    .center-content-wrapper {
+        min-height: calc(100vh - 100px); /* ارتفاع کافی برای وسط قرارگیری (ارتفاع کل - ارتفاع هدر) */
+        display: flex;
+        flex-direction: column; /* برای اینکه آیتم‌ها زیر هم قرار گیرند */
+        justify-content: center; /* مرکزیت عمودی */
+        align-items: center; /* مرکزیت افقی */
+    }
+
+    /* Header */
+    .topbar {
+        background: var(--card);
+        padding: 12px 20px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        border-radius: 12px;
+        margin-bottom: 25px;
+    }
+
+    .topbar span {
+        margin-left: 15px;
+    }
+
+    .logout-btn {
+        background: var(--accent);
+        padding: 6px 14px;
+        border-radius: 8px;
+        color: #000;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .logout-btn:hover {
+        opacity: .8;
+    }
+    /* ======== GLOBAL STYLES (Add to base.html) ======== */
+
+    /* ----- Page Headers ----- */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        border-bottom: 2px solid var(--hover);
+        padding-bottom: 10px;
+    }
+    .page-header h1 {
+        color: var(--accent);
+        margin: 0;
+    }
+
+    /* ----- Buttons ----- */
+    .btn {
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
+        font-family: "Vazirmatn", sans-serif;
+    }
+    .btn-primary {
+        background: var(--accent);
+        color: #000;
+    }
+    .btn-primary:hover {
+        opacity: 0.8;
+    }
+    .btn-secondary {
+        background: var(--hover);
+        color: var(--text);
+    }
+    .btn-secondary:hover {
+        background: #2a4b3a;
+    }
+    .btn-danger {
+        background: #e74c3c;
+        color: #fff;
+    }
+    .btn-danger:hover {
+        background: #c0392b;
+    }
+
+    /* ----- Tables ----- */
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--card);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 0 15px rgba(31, 239, 143, 0.2);
+        border: 1px solid #1fef8f33;
+    }
+    .styled-table thead tr {
+        background: var(--hover);
+        color: var(--accent);
+        text-align: right;
+    }
+    .styled-table th,
+    .styled-table td {
+        padding: 12px 18px;
+    }
+    .styled-table tbody tr {
+        border-bottom: 1px solid var(--hover);
+    }
+    .styled-table tbody tr:last-of-type {
+        border-bottom: none;
+    }
+    .styled-table tbody tr:hover {
+        background-color: #1e2f26;
+    }
+    .styled-table .actions a {
+        margin-left: 8px;
+        color: var(--accent);
+    }
+    .styled-table .actions .delete {
+        color: #e74c3c;
+    }
+
+    /* ----- Forms (اصلاح برای وسط‌چین شدن) ----- */
+    .form-container {
+        background: var(--card);
+        padding: 25px;
+        border-radius: 12px;
+        border: 1px solid #1fef8f33;
+        box-shadow: 0 0 15px rgba(31, 239, 143, 0.2);
+        /* 🆕 محدودیت عرض برای وسط‌چین شدن */
+        max-width: 500px; 
+        width: 100%;
+    }
+    .form-container form p {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 18px;
+    }
+    .form-container form label {
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: #bbb;
+    }
+    .form-container form input[type="text"],
+    .form-container form input[type="email"],
+    .form-container form input[type="password"],
+    .form-container form input[type="number"],
+    .form-container form select,
+    .form-container form textarea {
+        background: var(--bg);
+        border: 1px solid var(--hover);
+        border-radius: 8px;
+        padding: 10px 12px;
+        color: var(--text);
+        font-family: "Vazirmatn", sans-serif;
+        font-size: 15px;
+    }
+    .form-container form input:focus,
+    .form-container form select:focus,
+    .form-container form textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 8px rgba(31, 239, 143, 0.5);
+    }
+    .form-container .form-actions {
+        margin-top: 20px;
+    }
+
+    /* ----- Detail View (اصلاح برای وسط‌چین شدن) ----- */
+    .detail-card {
+        background: var(--card);
+        padding: 25px;
+        border-radius: 12px;
+        border: 1px solid #1fef8f33;
+        box-shadow: 0 0 15px rgba(31, 239, 143, 0.2);
+        /* 🆕 محدودیت عرض برای وسط‌چین شدن */
+        max-width: 650px; 
+        width: 100%;
+    }
+    .detail-card .detail-item {
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+    .detail-card .detail-item strong {
+        color: var(--accent);
+        min-width: 120px;
+        display: inline-block;
+    }
+    .detail-actions {
+        margin-top: 25px;
+        border-top: 1px solid var(--hover);
+        padding-top: 20px;
+    }
+    .detail-actions .btn {
+        margin-left: 10px;
+    }
+
+    /* ----- Delete Confirmation (اصلاح برای وسط‌چین شدن) ----- */
+    .delete-confirm {
+        background: var(--card);
+        padding: 25px;
+        border-radius: 12px;
+        border: 1px solid #e74c3c;
+        box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+        text-align: center;
+        /* 🆕 محدودیت عرض برای وسط‌چین شدن */
+        max-width: 450px; 
+        width: 100%;
+    }
+    .delete-confirm p {
+        font-size: 18px;
+        margin-bottom: 25px;
+    }
+
+    /* ----- Login Page ----- */
+    .login-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: var(--bg);
+    }
+    .login-box {
+        width: 380px;
+        padding: 30px;
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid #1fef8f33;
+        box-shadow: 0 0 20px rgba(31, 239, 143, 0.3);
+    }
+    .login-box h1 {
+        text-align: center;
+        color: var(--accent);
+        margin-bottom: 25px;
+    }
+    .login-box .btn-submit {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    @media (max-width: 900px){
+        .sidebar { width: 60px; }
+        .sidebar h2 { display: none; }
+        .menu a span { display: none; }
+        .menu a { justify-content: center; }
+        .content { padding: 15px; } /* 🆕 کاهش padding در موبایل */
+    }
+
+</style>
+</head>
+
+<body>
+
+
+    <div class="center-content-wrapper">
+        <div class="form-container">
+            </div>
+    </div>
+<div class="layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>پنل مدیریت</h2>
+
+        <div class="menu">
+            <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <i class="fa-solid fa-chart-line"></i><span>داشبورد</span>
+            </a>
+
+            <!-- بخش مخصوص کاربران عادی و ادمین -->
+            <a href="{% url 'informationfund-list' %}">
+                <i class="fa-solid fa-users"></i><span>اعضای صندوق</span>
+            </a>
+
+            <a href="{% url 'deprivation-list' %}">
+                <i class="fa-solid fa-hand-holding-heart"></i><span>افراد محروم</span>
+            </a>
+
+            <a href="{% url 'report-list' %}">
+                <i class="fa-solid fa-file-lines"></i><span>گزارش‌ها</span>
+            </a>
+
+            <!-- فقط برای ادمین -->
+            {% if request.user.is_admin %}
+            <a href="{% url 'user-list' %}">
+                <i class="fa-solid fa-user-gear"></i><span>مدیریت کاربران</span>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- RIGHT Content -->
+    <div class="content">
+        <!-- Top Header -->
+        <div class="topbar">
+            <span><i class="fa-solid fa-user"></i> {{ request.user.username }}</span>
+            <a href="{% url 'logout' %}" class="logout-btn">خروج</a>
+        </div>
+
+        {% block content %}{% endblock %}
+    </div>
+</div>
 </body>
 </html>

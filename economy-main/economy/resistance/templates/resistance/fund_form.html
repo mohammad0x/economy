@@ -1,44 +1,127 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}{% if object %}ویرایش صندوق{% else %}ثبت صندوق جدید{% endif %}{% endblock %}
+{% extends "base.html" %}
+{% block title %}فرم دوره مالی{% endblock %}
 
 {% block content %}
-<div style="display:flex;justify-content:center;margin-top:40px;">
-    <div class="form-card">
-        <h2>{% if object %}ویرایش صندوق{% else %}ثبت صندوق جدید{% endif %}</h2>
-        <form method="post">
-            {% csrf_token %}
+<div class="form-wrapper">
+
+    <div class="form-header">
+        <h2><i class="fa-solid fa-vault"></i> {% if form.instance.pk %}ویرایش دوره مالی{% else %}افزودن دوره جدید{% endif %}</h2>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-fields">
             {% for field in form %}
             <div class="form-group">
-                {{ field.label_tag }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {{ field }}
                 {% if field.errors %}
-                    <div class="error">{{ field.errors|striptags }}</div>
+                    <div class="field-errors">{{ field.errors }}</div>
                 {% endif %}
             </div>
             {% endfor %}
-            <button type="submit" class="btn">{% if object %}ویرایش{% else %}ثبت{% endif %}</button>
-        </form>
-    </div>
+        </div>
+
+        <button type="submit" class="btn-submit">
+            <i class="fa-solid fa-check"></i> ذخیره
+        </button>
+    </form>
+
 </div>
 
 <style>
-.form-card {
-    width:400px; padding:30px;
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(12px);
-    border-radius:20px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.4);
-    color:#e0e0e0;
+.form-wrapper {
+    max-width: 600px;
+    margin: 50px auto;
+    background: rgba(15,27,33,0.95);
+    padding: 30px 35px;
+    border-radius: 18px;
+    box-shadow: 0 0 25px rgba(31,239,143,0.3);
+    transition: all 0.8s ease;
 }
-.form-card h2 { text-align:center; color:#1aff99; margin-bottom:20px; text-shadow:0 0 10px #1aff99aa; }
-.form-group { margin-bottom:20px; text-align:right; }
-.form-group input, .form-group select { width:100%; padding:12px; border-radius:10px; border:none;
-    outline:none; background: rgba(255,255,255,0.1); color:#fff; transition: all 0.3s; box-shadow: inset 0 2px 6px rgba(0,0,0,0.3); }
-.form-group input:focus, .form-group select:focus { background: rgba(255,255,255,0.15); box-shadow:0 0 10px #1aff99aa inset; transform:scale(1.02);}
-.error { color:#ff4d4d; font-size:13px; margin-top:5px; }
-.btn { width:100%; padding:12px; border-radius:12px; background:#1aff99; color:#000; font-weight:bold; font-size:16px; transition:all 0.3s;}
-.btn:hover { background:#12e68a; transform:translateY(-2px); }
+.form-header h2 {
+    color: #1fef8f;
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #1fef8f;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #1fef8f33;
+    background: rgba(255,255,255,0.05);
+    color: #eee;
+    font-size: 14px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #1fef8f;
+    box-shadow: 0 0 10px rgba(31,239,143,0.4);
+}
+
+.field-errors {
+    color: #e74c3c;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.btn-submit {
+    width: 100%;
+    background: #1fef8f;
+    color: #000;
+    font-weight: bold;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 18px rgba(31,239,143,0.4);
+}
+
+/* افکت ورود */
+.form-wrapper {
+    opacity: 0;
+    transform: translateY(25px);
+}
 </style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const page = document.querySelector(".form-wrapper");
+    page.style.opacity = 1;
+    page.style.transform = "translateY(0)";
+});
+</script>
 {% endblock %}

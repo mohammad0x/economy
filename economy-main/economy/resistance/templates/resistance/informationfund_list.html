@@ -1,70 +1,204 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
-
-{% block title %}لیست صندوق‌ها{% endblock %}
+{% block title %}مدیریت اعضای صندوق{% endblock %}
 
 {% block content %}
-<div class="dashboard-container">
-    <div class="table-container">
-        <h3>لیست صندوق‌ها</h3>
-        <input type="text" id="search-input" placeholder="جستجو صندوق‌ها..." class="search-box">
-        <table id="funds-table">
-            <thead>
-                <tr>
-                    <th>نام</th>
-                    <th>کد ملی</th>
-                    <th>شماره تلفن</th>
-                    <th>کد گروه</th>
-                    <th>مدیریت</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for fund in funds %}
-                <tr>
-                    <td>{{ fund.name }}</td>
-                    <td>{{ fund.nCode }}</td>
-                    <td>{{ fund.phone }}</td>
-                    <td>{{ fund.cGroup }}</td>
-                    <td>
-                        <a href="{% url 'informationfund-detail' fund.pk %}">جزئیات</a> |
-                        <a href="{% url 'informationfund-update' fund.pk %}">ویرایش</a> |
-                        <a href="{% url 'informationfund-delete' fund.pk %}">حذف</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<div class="infofund-wrapper">
+    <div class="infofund-card">
+        <h2 class="title"><i class="fa-solid fa-users"></i> مدیریت اعضای صندوق</h2>
+
+        <div class="actions">
+            <a href="{% url 'informationfund-create' %}" class="btn btn-add">
+                <i class="fa-solid fa-plus"></i> افزودن عضو جدید
+            </a>
+        </div>
+
+        {% if informationfund_list %}
+        <div class="table-container">
+            <table class="infofund-table">
+                <thead>
+                    <tr>
+                        <th>نام</th>
+                        <th>کد ملی</th>
+                        <th>شماره تماس</th>
+                        <th>نام صندوق</th>
+                        <th>تاریخ عضویت</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in informationfund_list %}
+                    <tr>
+                        <td>{{ member.full_name }}</td>
+                        <td>{{ member.national_code }}</td>
+                        <td>{{ member.phone_number }}</td>
+                        <td>{{ member.fund_name }}</td>
+                        <td>{{ member.created_at|date:"Y/m/d" }}</td>
+                        <td>
+                            <a href="{% url 'informationfund-detail' member.pk %}" class="btn btn-view" title="مشاهده جزئیات">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                            <a href="{% url 'informationfund-update' member.pk %}" class="btn btn-edit" title="ویرایش">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                            <a href="{% url 'informationfund-delete' member.pk %}" class="btn btn-delete" onclick="return confirmDelete(event)" title="حذف">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <div class="empty">
+                <i class="fa-solid fa-user-slash"></i>
+                <p>هیچ عضوی در صندوق ثبت نشده است.</p>
+            </div>
+        {% endif %}
     </div>
 </div>
 
 <style>
-.dashboard-container { display:flex; flex-direction:column; gap:30px; }
-.table-container {
-    background: rgba(11,61,47,0.85);
-    padding: 20px;
-    border-radius:15px;
-    backdrop-filter:blur(10px);
+/* ===== ساختار کلی ===== */
+.infofund-wrapper {
+    min-height: calc(100vh - 100px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-.table-container h3 { color: #1aff99; margin-bottom:15px; }
-.search-box {
-    width: 100%; padding: 10px 15px; border-radius:10px; border:none;
-    outline:none; margin-bottom:15px; background: rgba(255,255,255,0.1); color:#fff;
-    transition:all 0.3s;
+.infofund-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    box-shadow: 0 0 30px rgba(0,184,148,0.15);
+    border-radius: 16px;
+    padding: 30px 40px;
+    width: 90%;
+    max-width: 950px;
+    text-align: center;
 }
-.search-box:focus { background: rgba(255,255,255,0.15); box-shadow: 0 0 10px #1aff99aa inset; }
 
-table { width:100%; border-collapse:collapse; color:#e0e0e0; }
-th, td { padding:12px 10px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.1); }
-tr:hover { background: rgba(26,255,153,0.1); }
-@media(max-width:768px) { .table-container{ overflow-x:auto; } }
+/* ===== عنوان صفحه ===== */
+.title {
+    color: var(--accent);
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ===== دکمه‌ها ===== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 8px 14px;
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.btn i {
+    font-size: 14px;
+}
+
+.btn-add {
+    background-color: var(--accent);
+    color: #000;
+    margin-bottom: 20px;
+}
+.btn-add:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.btn-view {
+    background-color: #16a085;
+    color: #fff;
+}
+.btn-view:hover {
+    background-color: #1abc9c;
+}
+.btn-edit {
+    background-color: #2980b9;
+    color: #fff;
+}
+.btn-edit:hover {
+    background-color: #3498db;
+}
+.btn-delete {
+    background-color: #e74c3c;
+    color: #fff;
+}
+.btn-delete:hover {
+    background-color: #ff6150;
+}
+
+/* ===== جدول ===== */
+.table-container {
+    margin-top: 15px;
+    overflow-x: auto;
+    border-radius: 10px;
+}
+
+.infofund-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text-main);
+    font-size: 14px;
+}
+.infofund-table th, .infofund-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    text-align: center;
+}
+.infofund-table th {
+    background: rgba(255,255,255,0.05);
+    color: var(--accent);
+}
+.infofund-table tr:hover {
+    background: rgba(0,184,148,0.08);
+    transition: background 0.2s ease;
+}
+
+/* ===== وضعیت خالی ===== */
+.empty {
+    padding: 50px 0;
+    text-align: center;
+    color: #999;
+}
+.empty i {
+    font-size: 42px;
+    color: var(--accent);
+    margin-bottom: 10px;
+}
+
+/* ===== ریسپانسیو ===== */
+@media (max-width: 768px) {
+    .infofund-card {
+        padding: 25px 20px;
+    }
+    .infofund-table th, .infofund-table td {
+        font-size: 12px;
+        padding: 10px;
+    }
+}
 </style>
 
 <script>
-// Table Search Filter
-document.getElementById('search-input').addEventListener('keyup', function(){
-    let filter = this.value.toLowerCase();
-    let rows = document.querySelectorAll('#funds-table tbody tr');
-    rows.forEach(row => { row.style.display = row.innerText.toLowerCase().includes(filter)?'':'none'; });
-});
+/* ===== تأیید حذف ===== */
+function confirmDelete(e) {
+    if (!confirm("آیا از حذف این عضو اطمینان دارید؟")) {
+        e.preventDefault();
+        return false;
+    }
+    return true;
+}
 </script>
 {% endblock %}

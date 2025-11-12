@@ -2,199 +2,256 @@
 {% block title %}داشبورد{% endblock %}
 
 {% block content %}
-<div class="dashboard-container">
+<div class="dashboard-wrapper">
 
     <!-- کارت‌های آمار -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <i class="fa-solid fa-users stat-icon"></i>
-            <h3>کاربران فعال</h3>
-            <span>{{ users_count }}</span>
+    <div class="stats-container">
+        <div class="stat-box">
+            <i class="fa-solid fa-chart-line icon"></i>
+            <span class="count">{{ total_funds }}</span>
+            <p>صندوق‌ها</p>
         </div>
-        <div class="stat-card">
-            <i class="fa-solid fa-vault stat-icon"></i>
-            <h3>صندوق‌ها</h3>
-            <span>{{ funds_count }}</span>
+        <div class="stat-box">
+            <i class="fa-solid fa-hand-holding-heart icon"></i>
+            <span class="count">{{ total_deprivations }}</span>
+            <p>افراد محروم</p>
         </div>
-        <div class="stat-card">
-            <i class="fa-solid fa-hand-holding-heart stat-icon"></i>
-            <h3>افراد محروم</h3>
-            <span>{{ deprivation_count }}</span>
+        <div class="stat-box">
+            <i class="fa-solid fa-file-lines icon"></i>
+            <span class="count">{{ total_reports }}</span>
+            <p>گزارش‌ها</p>
         </div>
-        <div class="stat-card">
-            <i class="fa-solid fa-file-lines stat-icon"></i>
-            <h3>گزارش‌ها</h3>
-            <span>{{ reports_count }}</span>
+        <div class="stat-box">
+            <i class="fa-solid fa-users icon"></i>
+            <span class="count">{{ total_users }}</span>
+            <p>کاربران</p>
         </div>
     </div>
 
     <!-- نمودارها -->
-    <div class="charts-grid">
-        <div class="chart-card">
+    <div class="charts-container">
+        <div class="chart-box">
             <h3>وضعیت دوره صندوق‌ها</h3>
             <canvas id="chartFundsCourse"></canvas>
         </div>
-        <div class="chart-card">
-            <h3>تعداد وام‌ها و موجودی صندوق‌ها</h3>
+        <div class="chart-box">
+            <h3>وام‌ها و موجودی</h3>
             <canvas id="chartFundLoans"></canvas>
         </div>
-        <div class="chart-card">
-            <h3>تعداد گزارش‌ها بر اساس تاریخ</h3>
+        <div class="chart-box large">
+            <h3>تایم‌لاین گزارش‌ها</h3>
             <canvas id="chartReportsTimeline"></canvas>
+        </div>
+    </div>
+
+    <!-- اعضای صندوق (مثال کارت‌محور) -->
+    <div class="cards-section">
+        <h3>اعضای صندوق</h3>
+        <div class="cards-container">
+            {% for user in users %}
+            <div class="card">
+                <h4>{{ user.username }}</h4>
+                <p><strong>تلفن:</strong> {{ user.phone }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- دوره‌های مالی (مثال کارت‌محور) -->
+    <div class="cards-section">
+        <h3>دوره‌های مالی</h3>
+        <div class="cards-container">
+            {% for fund in funds %}
+            <div class="card">
+                <h4>{{ fund.fund.name }}</h4>
+                <p><strong>تعداد اعضا:</strong> {{ fund.member }}</p>
+                <p><strong>موجودی:</strong> {{ fund.quantity }}</p>
+                <p><strong>تعداد وام‌ها:</strong> {{ fund.NumberOfLoans }}</p>
+            </div>
+            {% endfor %}
         </div>
     </div>
 
 </div>
 
 <style>
-.dashboard-container {
+/* Wrapper کلی */
+.dashboard-wrapper {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 0 15px;
+}
+
+/* کارت‌های آمار */
+.stats-container {
     display: flex;
-    flex-direction: column;
-    gap: 30px;
-    margin-top: 20px;
+    justify-content: center;
+    gap: 25px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
 }
 
-/* کارت آمار */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 20px;
-}
-
-.stat-card {
-    background: var(--glass);
-    backdrop-filter: blur(12px);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+.stat-box {
+    background: rgba(15,27,33,0.95);
+    border-radius: 18px;
+    padding: 25px 20px;
     text-align: center;
-    color: var(--text-main);
-    transition: transform 0.3s ease, background 0.3s ease;
+    color: #eee;
+    width: 180px;
+    box-shadow: 0 0 20px rgba(31,239,143,0.25);
+    transition: transform 0.3s, box-shadow 0.3s;
 }
-.stat-card:hover {
-    transform: translateY(-5px);
-    background: var(--accent);
-    color: #000;
+.stat-box:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 0 35px rgba(31,239,143,0.45);
 }
-
-.stat-icon {
-    font-size: 30px;
+.stat-box .icon {
+    font-size: 42px;
+    color: #1fef8f;
     margin-bottom: 10px;
-    color: var(--accent);
-    transition: color 0.3s ease;
 }
-.stat-card:hover .stat-icon {
-    color: #000;
+.stat-box .count {
+    font-size: 30px;
+    font-weight: bold;
 }
-
-.stat-card h3 { font-size: 16px; margin-bottom: 5px; }
-.stat-card span { font-size: 24px; font-weight: bold; }
+.stat-box p {
+    font-size: 16px;
+    opacity: 0.8;
+}
 
 /* نمودارها */
-.charts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+.charts-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 25px;
+    margin-bottom: 50px;
 }
 
-.chart-card {
-    background: var(--glass);
-    backdrop-filter: blur(12px);
+.chart-box {
+    background: rgba(15,27,33,0.95);
     padding: 20px;
-    border-radius: 15px;
-    box-shadow: -1px -13px 25px rgba(196, 189, 189, 0.74);
-    color: var(--text-main);
-}
-
-.chart-card h3 {
+    border-radius: 18px;
+    width: 350px;
     text-align: center;
+    box-shadow: 0 0 20px rgba(31,239,143,0.25);
+}
+.chart-box h3 {
+    color: #1fef8f;
     margin-bottom: 15px;
-    color: var(--accent);
+}
+.large {
+    width: 100%;
 }
 
-/* ریسپانسیو */
-@media(max-width:768px){
-    .stats-grid, .charts-grid { grid-template-columns: 1fr; }
+/* کارت‌ها (اعضا و دوره‌ها) */
+.cards-section {
+    margin-bottom: 50px;
+}
+.cards-section h3 {
+    color: #1fef8f;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+.card {
+    background: rgba(15,27,33,0.95);
+    padding: 20px;
+    border-radius: 18px;
+    width: 220px;
+    box-shadow: 0 0 18px rgba(31,239,143,0.25);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 30px rgba(31,239,143,0.45);
+}
+.card h4 {
+    color: #1fef8f;
+    margin-bottom: 10px;
+}
+.card p {
+    color: #eee;
+    font-size: 14px;
+    margin-bottom: 6px;
+    line-height: 1.3;
+}
+
+/* Responsive */
+@media(max-width:1050px){
+    .stats-container, .charts-container, .cards-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .chart-box, .stat-box, .card {
+        width: 80%;
+        max-width: 350px;
+    }
 }
 </style>
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // نمودار وضعیت دوره صندوق‌ها (دایره‌ای)
-    const ctx1 = document.getElementById('chartFundsCourse').getContext('2d');
-    new Chart(ctx1, {
-        type: 'doughnut',
-        data: {
-            labels: ['دارای دوره', 'بدون دوره'],
-            datasets: [{
-                label: 'وضعیت دوره',
-                data: [{{ funds_with_course }}, {{ funds_without_course }}],
-                backgroundColor: ['#C19A41', '#098368ff'],
-                borderColor: ['#fff','#fff'],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: 'bottom', labels: { color: 'var(--text-main)' } } }
-        }
-    });
+new Chart(document.getElementById('chartFundsCourse'), {
+    type: 'doughnut',
+    data: {
+        labels: ['دارای دوره', 'بدون دوره'],
+        datasets: [{
+            data: [{{ total_active_funds }}, {{ total_funds|add:"-total_active_funds" }}],
+            backgroundColor: ['#1fef8f', '#127657'],
+            borderColor: '#000'
+        }]
+    },
+    options: { plugins:{ legend:{labels:{color:'#eee'}} }, responsive:true }
+});
 
-    // نمودار تعداد وام‌ها و موجودی صندوق‌ها (میله‌ای)
-    const ctx2 = document.getElementById('chartFundLoans').getContext('2d');
-    new Chart(ctx2, {
-        type: 'bar',
-        data: {
-            labels: [{% for f in funds %}'{{ f.fund.name }}',{% endfor %}],
-            datasets: [
-                {
-                    label: 'تعداد وام',
-                    data: [{% for f in funds %}{{ f.NumberOfLoans }},{% endfor %}],
-                    backgroundColor: '#C19A41'
-                },
-                {
-                    label: 'موجودی',
-                    data: [{% for f in funds %}{{ f.quantity }},{% endfor %}],
-                    backgroundColor: '#1F3B2C'
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { labels: { color: 'var(--text-main)' } } },
-            scales: {
-                y: { beginAtZero:true, ticks:{ color: 'var(--text-main)' } },
-                x: { ticks:{ color: 'var(--text-main)' } }
+new Chart(document.getElementById('chartFundLoans'), {
+    type: 'bar',
+    data: {
+        labels: [{% for fund in funds %}'{{ fund.fund.name }}',{% endfor %}],
+        datasets: [
+            {
+                label: 'وام‌ها',
+                data: [{% for fund in funds %}{{ fund.NumberOfLoans }},{% endfor %}],
+                backgroundColor: '#1fef8f'
+            },
+            {
+                label: 'موجودی',
+                data: [{% for fund in funds %}{{ fund.quantity }},{% endfor %}],
+                backgroundColor: '#0bc47e'
             }
-        }
-    });
+        ]
+    },
+    options:{ 
+        plugins:{ legend:{labels:{color:'#eee'}}},
+        scales:{ x:{ticks:{color:'#eee'}}, y:{ticks:{color:'#eee'}} }
+    }
+});
 
-    // نمودار تعداد گزارش‌ها بر اساس تاریخ (خطی)
-    const ctx3 = document.getElementById('chartReportsTimeline').getContext('2d');
-    new Chart(ctx3, {
-        type: 'line',
-        data: {
-            labels: [{% for d in reports_timeline %}'{{ d.date }}',{% endfor %}],
-            datasets: [{
-                label: 'تعداد گزارش',
-                data: [{% for d in reports_timeline %}{{ d.count }},{% endfor %}],
-                borderColor: '#C19A41',
-                backgroundColor: 'rgba(193,154,65,0.2)',
-                tension: 0.3,
-                fill:true,
-                pointBackgroundColor:'#1F3B2C'
-            }]
-        },
-        options: {
-            responsive:true,
-            plugins:{ legend:{ labels:{ color:'var(--text-main)' } } },
-            scales: {
-                y: { ticks:{ color:'var(--text-main)', beginAtZero:true } },
-                x: { ticks:{ color:'var(--text-main)' } }
-            }
-        }
-    });
-
+new Chart(document.getElementById('chartReportsTimeline'), {
+    type: 'line',
+    data: {
+        labels: [{% for report in reports %}'{{ report.date }}',{% endfor %}],
+        datasets: [{
+            label: "گزارش‌ها",
+            data: [{% for report in reports %}{{ report.count }},{% endfor %}],
+            borderColor: '#1fef8f',
+            backgroundColor: 'rgba(31,239,143,.23)',
+            tension: .35,
+            fill:true,
+            pointRadius: 5
+        }]
+    },
+    options:{
+        plugins:{ legend:{labels:{color:'#eee'}} },
+        scales:{ x:{ticks:{color:'#eee'}}, y:{ticks:{color:'#eee'}} }
+    }
+});
 </script>
+
 {% endblock %}

@@ -1,71 +1,118 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}لیست کاربران{% endblock %}
-
+{% extends "base.html" %}
+{% block title %}کاربران{% endblock %}
 {% block content %}
-<div class="dashboard-container">
-    <div class="table-container">
-        <h3>لیست کاربران</h3>
-        <input type="text" id="search-input" placeholder="جستجو کاربران..." class="search-box">
-        <table id="users-table">
-            <thead>
-                <tr>
-                    <th>شماره تلفن</th>
-                    <th>نام کاربری</th>
-                    <th>فعال</th>
-                    <th>مدیریت</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in users %}
-                <tr>
-                    <td>{{ user.phone }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.is_active|yesno:"بله,خیر" }}</td>
-                    <td>
-                        <a href="{% url 'user-detail' user.pk %}">جزئیات</a> |
-                        <a href="{% url 'user-update' user.pk %}">ویرایش</a> |
-                        <a href="{% url 'user-delete' user.pk %}">حذف</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<h2 class="page-title">لیست کاربران</h2>
+<a href="{% url 'user-create' %}" class="btn add-btn"><i class="fa-solid fa-user-plus"></i> افزودن کاربر</a>
+
+<div class="table-wrapper">
+<table class="custom-table">
+<thead>
+<tr>
+<th>شماره تلفن</th>
+<th>نام کاربری</th>
+<th>عملیات</th>
+</tr>
+</thead>
+<tbody>
+{% for user in users %}
+<tr>
+<td>{{ user.phone }}</td>
+<td>{{ user.username }}</td>
+<td>
+<a href="{% url 'user-detail' user.pk %}" class="btn"><i class="fa-solid fa-eye"></i> نمایش</a>
+<a href="{% url 'user-update' user.pk %}" class="btn"><i class="fa-solid fa-pen-to-square"></i> ویرایش</a>
+<a href="{% url 'user-delete' user.pk %}" class="btn btn-danger"><i class="fa-solid fa-trash"></i> حذف</a>
+</td>
+</tr>
+{% empty %}
+<tr><td colspan="3">هیچ کاربری یافت نشد</td></tr>
+{% endfor %}
+</tbody>
+</table>
 </div>
 
 <style>
-.dashboard-container { display: flex; flex-direction: column; gap: 30px; }
-.table-container {
-    background: rgba(11,61,47,0.85);
-    padding: 20px;
-    border-radius: 15px;
-    backdrop-filter: blur(10px);
+.page-title {
+    color: #1fef8f;
+    margin-bottom: 15px;
+    font-size: 22px;
 }
-.table-container h3 { color: #1aff99; margin-bottom: 15px; }
-.search-box {
-    width: 100%; padding: 10px 15px; border-radius: 10px; border: none;
-    outline: none; margin-bottom: 15px; background: rgba(255,255,255,0.1); color: #fff;
-    transition: all 0.3s;
+
+.table-wrapper {
+    overflow-x: auto;
+    margin-top: 15px;
 }
-.search-box:focus { background: rgba(255,255,255,0.15); box-shadow: 0 0 10px #1aff99aa inset; }
 
-table { width: 100%; border-collapse: collapse; color: #e0e0e0; }
-th, td { padding: 12px 10px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-tr:hover { background: rgba(26,255,153,0.1); }
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 12px;
+    overflow: hidden;
+}
 
-@media (max-width: 768px) { .table-container { overflow-x: auto; } }
+.custom-table th, .custom-table td {
+    padding: 12px 15px;
+    text-align: right;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.custom-table th {
+    background: rgba(31,239,143,0.1);
+    color: #1fef8f;
+    font-weight: 600;
+}
+
+.custom-table tr:hover {
+    background: rgba(31,239,143,0.15);
+    transition: 0.3s;
+}
+
+.btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: #1fef8f;
+    color: #000;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+    margin-right: 5px;
+    
+}
+
+.btn:hover {
+    background: #12b67c;
+    color: #fff;
+}
+
+.btn-danger {
+    background: #e74c3c;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #ff5e4d;
+}
+
+.add-btn {
+    margin-bottom: 12px;
+    align-items: center;
+    gap: 6px;
+}
+
+@media (max-width: 700px){
+.custom-table th, .custom-table td { padding:8px 10px; font-size:14px; }
+.page-title { font-size:18px; }
+.btn { padding:4px 8px; font-size:13px; }
+}
 </style>
 
 <script>
-// Table Search Filter
-document.getElementById('search-input').addEventListener('keyup', function() {
-    let filter = this.value.toLowerCase();
-    let rows = document.querySelectorAll('#users-table tbody tr');
-    rows.forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
-    });
+document.querySelectorAll('.btn-danger').forEach(btn=>{
+btn.addEventListener('click',function(e){
+if(!confirm("آیا مطمئن هستید که می‌خواهید حذف کنید؟")) e.preventDefault();
+});
 });
 </script>
 {% endblock %}

@@ -1,47 +1,48 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}{% if object %}ویرایش کاربر{% else %}ثبت کاربر جدید{% endif %}{% endblock %}
-
+{% extends "base.html" %}
+{% block title %}فرم کاربر{% endblock %}
 {% block content %}
-<div style="display:flex;justify-content:center;margin-top:40px;">
-    <div class="form-card">
-        <h2>{% if object %}ویرایش کاربر{% else %}ثبت کاربر جدید{% endif %}</h2>
-        <form method="post">
-            {% csrf_token %}
-            {% for field in form %}
-            <div class="form-group">
-                {{ field.label_tag }}
-                {{ field }}
-                {% if field.errors %}
-                    <div class="error">{{ field.errors|striptags }}</div>
-                {% endif %}
-            </div>
-            {% endfor %}
-            <button type="submit" class="btn">{% if object %}ویرایش{% else %}ثبت{% endif %}</button>
-        </form>
-    </div>
-</div>
+<h2 class="page-title">{% if object %}ویرایش کاربر{% else %}افزودن کاربر{% endif %}</h2>
+
+<form method="post" enctype="multipart/form-data" class="form-wrapper">
+{% csrf_token %}
+{{ form.as_p }}
+<button type="submit" class="btn submit-btn"><i class="fa-solid fa-floppy-disk"></i> ذخیره</button>
+</form>
 
 <style>
-.form-card {
-    width: 400px;
-    padding: 30px;
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(12px);
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-    color: #e0e0e0;
+.page-title { color:#1fef8f; margin-bottom:15px; font-size:22px; }
+
+.form-wrapper {
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    max-width:500px;
 }
-.form-card h2 {
-    text-align:center; color:#1aff99; margin-bottom:20px; text-shadow:0 0 10px #1aff99aa;
+
+.form-wrapper input, .form-wrapper select, .form-wrapper textarea {
+    background: rgba(31,239,143,0.06);
+    border:1px solid rgba(31,239,143,0.2);
+    color:#eee;
+    padding:10px;
+    border-radius:8px;
+    font-size:15px;
 }
-.form-group { margin-bottom:20px; text-align:right; }
-.form-group input { width:100%; padding:12px; border-radius:10px; border:none; outline:none;
-    background:rgba(255,255,255,0.1); color:#fff; transition: all 0.3s; box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);}
-.form-group input:focus { background: rgba(255,255,255,0.15); box-shadow: 0 0 10px #1aff99aa inset; transform: scale(1.02); }
-.error { color:#ff4d4d; font-size:13px; margin-top:5px; }
-.btn { width:100%; padding:12px; border-radius:12px; background:#1aff99; color:#000; font-weight:bold; font-size:16px; transition:all 0.3s; }
-.btn:hover { background:#12e68a; transform:translateY(-2px); }
+
+.form-wrapper label { margin-bottom:4px; font-weight:500; }
+
+.submit-btn {
+    width:150px;
+    margin-top:10px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
 </style>
+
+<script>
+const form=document.querySelector('.form-wrapper');
+if(form){
+form.addEventListener('submit',()=>{document.querySelector('.submit-btn').disabled=true;});
+}
+</script>
 {% endblock %}

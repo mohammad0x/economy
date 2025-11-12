@@ -9,8 +9,7 @@ urlpatterns = [
         redirect_authenticated_user=True),
         name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
-    path('admin/profile/', views.admin_profile, name='admin-profile'),
-
+    path('profile/', views.admin_profile, name='admin_profile'),
     path('users/', views.MyUserListView.as_view(), name='user-list'),
     path('users/<int:pk>/', views.MyUserDetailView.as_view(), name='user-detail'),
     path('users/new/', views.MyUserCreateView.as_view(), name='user-create'),
@@ -23,7 +22,8 @@ urlpatterns = [
     path('infofunds/<int:pk>/edit/', views.InformationFundUpdateView.as_view(), name='informationfund-update'),
     path('infofunds/<int:pk>/delete/', views.InformationFundDeleteView.as_view(), name='informationfund-delete'),
 
-    path('infofunds/<int:infofund_pk>/fund/new/', views.FundCreateView.as_view(), name='fund-create'),
+    path('infofunds/<int:infofund_pk>/fund/new/', views.FundCreateView.as_view(), name='fund-create-for-infofund'),
+    path('funds/new/', views.FundCreateView.as_view(), name='fund-create'),
     path('funds/<int:pk>/', views.FundDetailView.as_view(), name='fund-detail'),
     path('funds/<int:pk>/edit/', views.FundUpdateView.as_view(), name='fund-update'),
     path('funds/<int:pk>/delete/', views.FundDeleteView.as_view(), name='fund-delete'),

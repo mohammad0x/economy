@@ -1,54 +1,48 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends "base.html" %}
 
-{% block title %}جزئیات کاربر{% endblock %}
+{% block title %}جزئیات گزارش: {{ report.subject|truncatewords:5 }}{% endblock %}
 
 {% block content %}
-<div style="display:flex;justify-content:center;margin-top:40px;">
-    <div class="detail-card">
-        <h2>جزئیات کاربر</h2>
-        <p><strong>شماره تلفن:</strong> {{ user.phone }}</p>
-        <p><strong>نام کاربری:</strong> {{ user.username }}</p>
-        <p><strong>فعال:</strong> {{ user.is_active|yesno:"بله,خیر" }}</p>
-        <p><strong>ادمین:</strong> {{ user.is_admin|yesno:"بله,خیر" }}</p>
-        <div style="margin-top:20px;">
-            <a href="{% url 'user-update' user.pk %}" class="btn">ویرایش</a>
-            <a href="{% url 'user-delete' user.pk %}" class="btn btn-danger">حذف</a>
-        </div>
+<style>
+    /* استایل‌های اصلی detail-card در base.html هستند */
+</style>
+
+<div class="page-header">
+    <h1><i class="fa-solid fa-file-text"></i> جزئیات گزارش</h1>
+</div>
+
+<div class="detail-card">
+    <div class="detail-item">
+        <strong>موضوع:</strong> <span>{{ report.subject }}</span>
+    </div>
+    <div class="detail-item">
+        <strong>تاریخ گزارش:</strong> <span>{{ report.date|date:"Y/m/d H:i" }}</span>
+    </div>
+    <div class="detail-item">
+        <strong>مربوط به محروم:</strong> 
+        <a href="{% url 'deprivation-detail' report.deprivation.pk %}" style="color: var(--accent); text-decoration: none;">
+            {{ report.deprivation.name }} <i class="fa-solid fa-up-right-from-square" style="font-size: 12px; margin-right: 5px;"></i>
+        </a>
+    </div>
+    <div class="detail-item">
+        <strong>عضو گزارش‌دهنده:</strong> <span>{{ report.member|default:"-" }}</span>
+    </div>
+    <div class="detail-item">
+        <strong>آدرس/مکان:</strong> <span>{{ report.address|default:"-" }}</span>
+    </div>
+    
+    <hr style="border-top: 1px solid var(--hover); margin: 20px 0;">
+
+    <div class="detail-item">
+        <strong>شرح کامل:</strong> 
+        <p style="white-space: pre-wrap; margin-top: 10px; background: var(--bg); padding: 15px; border-radius: 8px;">{{ report.desc|default:"توضیحات تکمیلی ثبت نشده است." }}</p>
+    </div>
+    
+    <div class="detail-actions">
+        <a href="{% url 'report-update' report.pk %}" class="btn btn-secondary"><i class="fa-solid fa-pen"></i> ویرایش</a>
+        <a href="{% url 'report-delete' report.pk %}" class="btn btn-danger"><i class="fa-solid fa-trash"></i> حذف</a>
+        <a href="{% url 'report-list' %}" class="btn btn-secondary"><i class="fa-solid fa-list"></i> بازگشت به لیست</a>
     </div>
 </div>
 
-<style>
-.detail-card {
-    width: 400px;
-    padding: 30px;
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(12px);
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-    color: #e0e0e0;
-    text-align: right;
-}
-.detail-card h2 {
-    text-align: center;
-    color: #1aff99;
-    margin-bottom: 20px;
-    text-shadow: 0 0 10px #1aff99aa;
-}
-.detail-card p { margin-bottom: 10px; }
-.btn {
-    display:inline-block;
-    padding:10px 20px;
-    margin-right:10px;
-    border-radius:12px;
-    background:#1aff99;
-    color:#000;
-    font-weight:bold;
-    text-decoration:none;
-    transition: all 0.3s;
-}
-.btn:hover { background:#12e68a; transform: translateY(-2px); }
-.btn-danger { background:#ff4d4d; color:#fff; }
-.btn-danger:hover { background:#e60000; }
-</style>
 {% endblock %}

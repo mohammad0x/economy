@@ -1,46 +1,31 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% block title %}جزئیات محروم{% endblock %}
 {% block content %}
-    <h1>جزئیات: {{ deprivation.name }}</h1>
-    <div class="detail-view">
-        <p><strong>نام و نام خانوادگی:</strong> {{ deprivation.name }}</p>
-        <p><strong>کد ملی:</strong> {{ deprivation.nCode }}</p>
-        <p><strong>نام پدر:</strong> {{ deprivation.fName }}</p>
-        <p><strong>شماره تلفن:</strong> {{ deprivation.phone }}</p>
-        <p><strong>کد گروه:</strong> {{ deprivation.cGroup }}</p>
-        <p><strong>نام صندوق:</strong> {{ deprivation.fund_name|default:"-" }}</p>
-    </div>
-    <a href="{% url 'deprivation-update' deprivation.pk %}" class="btn">ویرایش</a>
-    <a href="{% url 'deprivation-delete' deprivation.pk %}" class="btn btn-delete">حذف</a>
-    <a href="{% url 'deprivation-list' %}" class="btn btn-secondary">بازگشت به لیست</a>
-    <hr style="margin-top: 2rem;">
-    <h3>گزارش‌های ثبت شده</h3>
-    <a href="{% url 'report-create' deprivation.pk %}" class="btn">ثبت گزارش جدید</a>
-    <table>
-        <thead>
-            <tr>
-                <th>موضوع</th>
-                <th>تاریخ</th>
-                <th>تعداد اعضا</th>
-                <th>عملیات</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for report in deprivation.report_set.all %}
-            <tr>
-                <td>{{ report.subject }}</td>
-                <td>{{ report.date }}</td>
-                <td>{{ report.member }}</td>
-                <td class="actions">
-                    <a href="{% url 'report-detail' report.pk %}">جزئیات</a>
-                    <a href="{% url 'report-update' report.pk %}">ویرایش</a>
-                    <a href="{% url 'report-delete' report.pk %}" class="delete">حذف</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4">هیچ گزارشی برای این مورد ثبت نشده است.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<h2 class="page-title">جزئیات محروم</h2>
+
+<div class="detail-card">
+<p><strong>نام و نام خانوادگی:</strong> {{ deprivation.name }}</p>
+<p><strong>کد ملی:</strong> {{ deprivation.nCode }}</p>
+<p><strong>نام پدر:</strong> {{ deprivation.fName }}</p>
+<p><strong>شماره تلفن:</strong> {{ deprivation.phone }}</p>
+<p><strong>کد گروه:</strong> {{ deprivation.cGroup }}</p>
+<p><strong>صندوق مرتبط:</strong> {{ deprivation.fund_name }}</p>
+</div>
+
+<div class="action-buttons">
+<a href="{% url 'deprivation-update' deprivation.pk %}" class="btn"><i class="fa-solid fa-pen-to-square"></i> ویرایش</a>
+<a href="{% url 'deprivation-delete' deprivation.pk %}" class="btn btn-danger"><i class="fa-solid fa-trash"></i> حذف</a>
+</div>
+
+<style>
+.detail-card { background: rgba(31,239,143,0.06); border-radius:12px; padding:20px; margin-bottom:15px; }
+.detail-card p { margin-bottom:10px; font-size:16px; }
+.action-buttons .btn { margin-right:8px; display:inline-flex; align-items:center; gap:4px; }
+</style>
+
+<script>
+document.querySelectorAll('.btn-danger').forEach(btn=>{
+btn.addEventListener('click',function(e){if(!confirm("آیا مطمئن هستید که می‌خواهید حذف کنید؟")) e.preventDefault();});
+});
+</script>
 {% endblock %}

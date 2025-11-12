@@ -1,15 +1,47 @@
 {% extends "base.html" %}
 {% block title %}جزئیات کاربر{% endblock %}
 {% block content %}
-<div class="card shadow">
-    <div class="card-header">جزئیات کاربر</div>
-    <div class="card-body">
-        <p><strong>شماره تلفن:</strong> {{ user.phone }}</p>
-        <p><strong>نام کاربری:</strong> {{ user.username }}</p>
-        <p><strong>ادمین؟</strong> {% if user.is_admin %}✅{% else %}❌{% endif %}</p>
+<h2 class="page-title">جزئیات کاربر</h2>
 
-        <a href="{% url 'user-update' user.pk %}" class="btn btn-warning">ویرایش</a>
-        <a href="{% url 'user-delete' user.pk %}" class="btn btn-danger">حذف</a>
-    </div>
+<div class="detail-card">
+<p><strong>شماره تلفن:</strong> {{ user.phone }}</p>
+<p><strong>نام کاربری:</strong> {{ user.username }}</p>
+{% if user.profile_image %}
+<p><strong>تصویر پروفایل:</strong><br><img src="{{ user.profile_image.url }}" class="profile-pic"></p>
+{% endif %}
 </div>
+
+<div class="action-buttons">
+<a href="{% url 'user-update' user.pk %}" class="btn"><i class="fa-solid fa-pen-to-square"></i> ویرایش</a>
+<a href="{% url 'user-delete' user.pk %}" class="btn btn-danger"><i class="fa-solid fa-trash"></i> حذف</a>
+</div>
+
+<style>
+.detail-card {
+    background: rgba(31,239,143,0.06);
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:15px;
+}
+
+.detail-card p { margin-bottom:10px; font-size:16px; }
+
+.profile-pic {
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    border:2px solid #1fef8f;
+    object-fit:cover;
+}
+
+.action-buttons .btn { margin-right:8px; display:inline-flex; align-items:center; gap:4px; }
+</style>
+
+<script>
+document.querySelectorAll('.btn-danger').forEach(btn=>{
+btn.addEventListener('click',function(e){
+if(!confirm("آیا مطمئن هستید که می‌خواهید حذف کنید؟")) e.preventDefault();
+});
+});
+</script>
 {% endblock %}

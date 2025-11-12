@@ -1,129 +1,189 @@
-{% load static %}
-{% block content %}
-<!-- Login Container -->
-<div style="display:flex;justify-content:center;align-items:center;height:80vh;">
-    <div class="login-card">
-        <h2>ورود به پنل</h2>
-        <form method="post" action="{% url 'login' %}">
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود به پنل مدیریت</title>
+    
+    <style>
+        /* ------------------- CSS Variables Definition (Mini) ------------------- */
+        :root {
+            --neon-green: #1fef8f;
+            --font-color-light: #eee;
+            --font-color-dark: #333;
+            --bg-dark: #0f1b21;
+            --bg-light: #f0f2f5;
+            --card-dark: #11262f;
+            --card-light: #ffffff;
+            --border-dark: #1fef8f33;
+            --border-light: #e0e0e0;
+            --shadow: 0 0 15px rgba(31, 239, 143, 0.5);
+            --transition-time: 0.3s;
+        }
+
+        /* ------------------- DARK MODE (Default) ------------------- */
+        body {
+            background-color: var(--bg-dark); 
+            color: var(--font-color-light); 
+            transition: background-color var(--transition-time), color var(--transition-time);
+            display: flex; justify-content: center; align-items: center; min-height: 100vh;
+            font-family: 'Tahoma', 'Vazirmatn', sans-serif;
+            margin: 0;
+        }
+
+        /* ------------------- LIGHT MODE (Fallback Class) ------------------- */
+        /* اگر کاربر کلاس light-mode را به body اضافه کند */
+        .light-mode {
+            background-color: var(--bg-light);
+            color: var(--font-color-dark);
+        }
+
+        .login-container {
+            width: 90%; max-width: 400px;
+            background: var(--card-dark);
+            border: 2px solid var(--border-dark);
+            box-shadow: var(--shadow);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            transition: all var(--transition-time);
+        }
+        
+        /* استایل‌های لایت مود برای کانتینر */
+        .light-mode .login-container {
+            background: var(--card-light);
+            border-color: var(--border-light);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--neon-green);
+            text-shadow: 0 0 10px rgba(31, 239, 143, 0.7);
+            margin-bottom: 30px;
+            font-size: 30px;
+            font-weight: 900;
+        }
+
+        .light-mode h1 {
+            text-shadow: none;
+            color: var(--font-color-dark);
+        }
+
+        /* فیلدهای فرم */
+        input[type="text"], input[type="password"] {
+            width: 100%; padding: 14px 20px; margin-bottom: 20px;
+            border: 2px solid var(--border-dark);
+            background-color: var(--bg-dark);
+            color: var(--font-color-light);
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        .light-mode input {
+            border-color: var(--border-light);
+            background-color: var(--bg-light);
+            color: var(--font-color-dark);
+        }
+
+        input:focus {
+            border-color: var(--neon-green);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(31, 239, 143, 0.3);
+        }
+        
+        /* دکمه ورود */
+        .btn-login {
+            width: 100%; padding: 15px; border: none;
+            background-color: var(--neon-green);
+            color: var(--bg-dark); /* متن تیره روی دکمه روشن */
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 18px;
+        }
+        .btn-login:hover {
+            background-color: var(--neon-green);
+            opacity: 0.9;
+        }
+
+        /* ارورها */
+        .errorlist {
+            list-style: none; padding: 0; margin-bottom: 15px;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        /* دکمه تغییر تم */
+        .theme-toggle-btn {
+            position: absolute; top: 20px; left: 20px;
+            background: none; border: none; cursor: pointer; 
+            color: var(--font-color-light); font-size: 24px; 
+            transition: color 0.3s;
+        }
+        .light-mode .theme-toggle-btn {
+             color: var(--font-color-dark);
+        }
+    </style>
+</head>
+<body>
+
+    <button id="theme-toggle" class="theme-toggle-btn" title="تغییر تم">
+        <i class="fa-solid fa-sun light-mode-icon" style="display: none;"></i>
+        <i class="fa-solid fa-moon dark-mode-icon"></i>
+    </button>
+
+    <div class="login-container">
+        <h1>ورود به پنل</h1>
+
+        <form method="post">
             {% csrf_token %}
-            <!-- Phone Field -->
-            <div class="form-group">
-                <label for="id_phone">شماره تلفن</label>
-                <input type="text" name="phone" id="id_phone" placeholder="مثال: 09123456789" required>
-            </div>
-            <!-- Password Field -->
-            <div class="form-group">
-                <label for="id_password">رمز عبور</label>
-                <input type="password" name="password" id="id_password" placeholder="رمز عبور" required>
-            </div>
-            <!-- Submit Button -->
-            <button type="submit" class="btn">ورود</button>
+            
+            {% if form.errors %}
+                <ul class="errorlist">
+                    <li>نام کاربری یا رمز عبور اشتباه است.</li>
+                </ul>
+            {% endif %}
+
+            <input type="text" name="{{ form.username.name }}" placeholder="نام کاربری" required autofocus>
+            <input type="password" name="{{ form.password.name }}" placeholder="رمز عبور" required>
+            
+            <button type="submit" class="btn-login">ورود</button>
+            <input type="hidden" name="next" value="{{ next }}">
         </form>
     </div>
-</div>
 
-<!-- Toast for errors -->
-<div id="login-toast"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+    <script>
+        const themeKey = 'app-theme';
+        const body = document.body;
+        
+        function applyTheme(theme) {
+            const isLight = theme === 'light';
+            // برای صفحه لاگین، کلاس light-mode را مستقیم به body اضافه می کنیم
+            body.className = isLight ? 'light-mode' : '';
+            localStorage.setItem(themeKey, theme);
 
-<style>
-    /* Login Card Glassmorphism */
-    .login-card {
-        width: 350px;
-        padding: 30px 25px;
-        background: rgba(255,255,255,0.05);
-        backdrop-filter: blur(12px);
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-        color: #e0e0e0;
-        text-align: center;
-        transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .login-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-    }
-    .login-card h2 {
-        margin-bottom: 20px;
-        color: #1aff99;
-        text-shadow: 0 0 8px #1aff99aa;
-    }
+            const sunIcon = document.querySelector('.light-mode-icon');
+            const moonIcon = document.querySelector('.dark-mode-icon');
+            if (sunIcon && moonIcon) {
+                sunIcon.style.display = isLight ? 'inline-block' : 'none';
+                moonIcon.style.display = isLight ? 'none' : 'inline-block';
+            }
+        }
 
-    .form-group {
-        margin-bottom: 20px;
-        text-align: right;
-    }
-    .form-group label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
-    .form-group input {
-        width: 100%;
-        padding: 12px 15px;
-        border-radius: 10px;
-        border: none;
-        outline: none;
-        background: rgba(255,255,255,0.1);
-        color: #fff;
-        transition: all 0.3s;
-        box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
-    }
-    .form-group input:focus {
-        background: rgba(255,255,255,0.15);
-        box-shadow: 0 0 10px #1aff99aa inset;
-        transform: scale(1.02);
-    }
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem(themeKey) || 'dark';
+            applyTheme(savedTheme);
 
-    /* Submit Button */
-    .btn {
-        width: 100%;
-        padding: 12px;
-        border-radius: 12px;
-        background: #1aff99;
-        color: #000;
-        font-weight: bold;
-        font-size: 16px;
-        box-shadow: 0 5px 15px rgba(0,255,153,0.3);
-        transition: all 0.3s;
-    }
-    .btn:hover {
-        background: #12e68a;
-        box-shadow: 0 8px 20px rgba(0,255,153,0.5);
-        transform: translateY(-2px);
-    }
-
-    /* Toast */
-    #login-toast {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #ff4d4d;
-        color: #fff;
-        padding: 14px 28px;
-        border-radius: 12px;
-        box-shadow: 0 6px 20px rgba(255,77,77,0.4);
-        display: none;
-        z-index: 1100;
-        font-weight: bold;
-        animation: toast-in 0.5s forwards, toast-out 0.5s forwards 3s;
-    }
-    @keyframes toast-in { from {opacity:0; transform: translate(-50%, -20px);} to {opacity:1; transform: translate(-50%,0);} }
-    @keyframes toast-out { to {opacity:0; transform: translate(-50%, -20px);} }
-
-    /* Responsive */
-    @media (max-width: 500px) {
-        .login-card { width: 90%; padding: 25px; }
-    }
-</style>
-
-<script>
-    // Example: show toast for login errors
-    {% if form.errors %}
-        const loginToast = document.getElementById('login-toast');
-        loginToast.textContent = "شماره تلفن یا رمز عبور اشتباه است!";
-        loginToast.style.display = 'block';
-        setTimeout(() => { loginToast.style.display = 'none'; }, 3500);
-    {% endif %}
-</script>
-{% endblock %}
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    const currentTheme = body.classList.contains('light-mode') ? 'light' : 'dark';
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    applyTheme(newTheme);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

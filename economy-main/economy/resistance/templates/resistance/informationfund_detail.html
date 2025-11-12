@@ -1,39 +1,199 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
-
 {% block title %}جزئیات صندوق{% endblock %}
 
 {% block content %}
-<div style="display:flex;justify-content:center;margin-top:40px;">
-    <div class="detail-card">
-        <h2>جزئیات صندوق</h2>
-        <p><strong>نام:</strong> {{ fund.name }}</p>
-        <p><strong>نام پدر:</strong> {{ fund.fName }}</p>
-        <p><strong>کد ملی:</strong> {{ fund.nCode }}</p>
-        <p><strong>شماره تلفن:</strong> {{ fund.phone }}</p>
-        <p><strong>کد گروه:</strong> {{ fund.cGroup }}</p>
-        <div style="margin-top:20px;">
-            <a href="{% url 'informationfund-update' fund.pk %}" class="btn">ویرایش</a>
-            <a href="{% url 'informationfund-delete' fund.pk %}" class="btn btn-danger">حذف</a>
+<div class="dashboard-wrapper">
+
+    <!-- Header صندوق -->
+    <div class="fund-header">
+        <h2><i class="fa-solid fa-users"></i> {{ fund.name }}</h2>
+        <div class="fund-actions">
+            <a href="{% url 'informationfund-update' fund.pk %}" class="btn-action edit"><i class="fa-solid fa-pen"></i> ویرایش</a>
+            <a href="{% url 'informationfund-delete' fund.pk %}" class="btn-action delete"><i class="fa-solid fa-trash"></i> حذف</a>
         </div>
     </div>
+
+    <!-- اطلاعات اعضا -->
+    <div class="section">
+        <h3>اعضای صندوق</h3>
+        {% if fund.members.all %}
+        <div class="cards-container">
+            {% for member in fund.members.all %}
+            <div class="member-card">
+                <h4>{{ member.name }}</h4>
+                <p><strong>کد ملی:</strong> {{ member.nCode }}</p>
+                <p><strong>تلفن:</strong> {{ member.phone }}</p>
+                <div class="card-actions">
+                    <a href="#" class="btn-action view"><i class="fa-solid fa-eye"></i></a>
+                    <a href="#" class="btn-action edit"><i class="fa-solid fa-pen"></i></a>
+                    <a href="#" class="btn-action delete"><i class="fa-solid fa-trash"></i></a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty">هیچ عضوی ثبت نشده است.</p>
+        {% endif %}
+    </div>
+
+    <!-- دوره‌های مالی -->
+    <div class="section">
+        <h3>دوره‌های مالی</h3>
+        <a href="{% url 'fund-create' infofund_pk=fund.pk %}" class="btn-add">
+            <i class="fa-solid fa-plus"></i> افزودن دوره جدید
+        </a>
+        {% if funds %}
+        <div class="cards-container">
+            {% for f in funds %}
+            <div class="fund-card">
+                <div class="card-header">
+                    <h4>{{ f.title }}</h4>
+                </div>
+                <div class="card-body">
+                    <p><strong>تاریخ شروع:</strong> {{ f.start_date|date:"Y/m/d" }}</p>
+                    <p><strong>تاریخ پایان:</strong> {{ f.end_date|date:"Y/m/d" }}</p>
+                    <p><strong>موجودی:</strong> {{ f.balance }} تومان</p>
+                    <p><strong>تعداد اعضا:</strong> {{ f.member }}</p>
+                </div>
+                <div class="card-actions">
+                    <a href="{% url 'fund-detail' f.pk %}" class="btn-action view"><i class="fa-solid fa-eye"></i></a>
+                    <a href="{% url 'fund-update' f.pk %}" class="btn-action edit"><i class="fa-solid fa-pen"></i></a>
+                    <a href="{% url 'fund-delete' f.pk %}" class="btn-action delete"><i class="fa-solid fa-trash"></i></a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty">هیچ دوره مالی ثبت نشده است.</p>
+        {% endif %}
+    </div>
+
 </div>
 
 <style>
-.detail-card {
-    width:400px; padding:30px;
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(12px);
-    border-radius:20px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.4);
-    color:#e0e0e0; text-align:right;
+.dashboard-wrapper {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 0 15px;
 }
-.detail-card h2 { text-align:center; color:#1aff99; margin-bottom:20px; text-shadow:0 0 10px #1aff99aa; }
-.detail-card p{ margin-bottom:10px; }
-.btn { display:inline-block; padding:10px 20px; margin-right:10px; border-radius:12px;
-    background:#1aff99; color:#000; font-weight:bold; text-decoration:none; transition:all 0.3s; }
-.btn:hover { background:#12e68a; transform:translateY(-2px);}
-.btn-danger { background:#ff4d4d; color:#fff; }
-.btn-danger:hover { background:#e60000; }
+
+/* Header صندوق */
+.fund-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+.fund-header h2 {
+    color: #1fef8f;
+    font-size: 28px;
+}
+.fund-actions .btn-action {
+    margin-left: 10px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #fff;
+}
+.btn-action.edit { background: #f39c12; }
+.btn-action.delete { background: #e74c3c; }
+
+/* Sections */
+.section {
+    margin-bottom: 40px;
+}
+.section h3 {
+    color: #1fef8f;
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+/* Cards container */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    justify-items: center;
+}
+
+/* Member card */
+.member-card, .fund-card {
+    background: rgba(15,27,33,0.95);
+    padding: 20px 18px;
+    border-radius: 18px;
+    width: 100%;
+    max-width: 320px;
+    box-shadow: 0 0 20px rgba(31,239,143,0.25);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.member-card:hover, .fund-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 0 30px rgba(31,239,143,0.45);
+}
+.card-header h4 {
+    color: #1fef8f;
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+.card-body p {
+    font-size: 15px;
+    margin-bottom: 8px;
+    color: #eee;
+}
+.card-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 12px;
+}
+.btn-action.view { background: #2980b9; }
+.btn-action:hover { opacity: 0.85; }
+
+/* Add button */
+.btn-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #1fef8f;
+    color: #000;
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    transition: 0.3s;
+}
+.btn-add:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 18px rgba(31,239,143,0.4);
+}
+
+/* Empty state */
+.empty {
+    text-align: center;
+    margin-top: 30px;
+    color: #aaa;
+    font-size: 16px;
+}
+
+/* Entry animation */
+.dashboard-wrapper {
+    opacity: 0;
+    transform: translateY(25px);
+    transition: all 0.8s ease;
+}
 </style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const page = document.querySelector(".dashboard-wrapper");
+    page.style.opacity = 1;
+    page.style.transform = "translateY(0)";
+});
+</script>
+
 {% endblock %}

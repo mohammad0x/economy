@@ -1,4 +1,5 @@
 from django.urls import reverse_lazy
+from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -7,7 +8,7 @@ from django.urls import reverse
 
 
 from .models import MyUser, InformationFund, Fund, Deprivation, Report
-from .forms import MyUserForm, InformationFundForm, FundForm, DeprivationForm, ReportForm
+from .forms import MyUserForm, InformationFundForm, FundForm, DeprivationForm, ReportForm ,AdminProfileForm
 
 
 def is_admin(user):
